@@ -1,0 +1,109 @@
+﻿@model BTL.ViewModels.Account.RegisterViewModel
+@{
+    Layout = null;
+    ViewBag.Title = "Đăng ký";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+</head>
+<body>
+    <section class="h-100">
+        <div class="container h-100">
+            <div class="row justify-content-sm-center h-100">
+                <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+                    <div class="card shadow-lg">
+                        <div class="card-body px-3 py-2">
+                            <h1 class="fs-2 card-title text-center text-uppercase fw-bold mb-3">@ViewBag.Title</h1>
+                            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @id = "form-register", @novalidate = "", @autocomplete = "off" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="mb-2">
+                                    <div class="w-100">
+                                        @Html.LabelFor(p => p.FirstName, new { @class = "mb-2 text-muted" })
+                                        @Html.TextBoxFor(p => p.FirstName, new { @class = "form-control", @required = true, @autofoucs = true })
+                                        @Html.ValidationMessageFor(p => p.FirstName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="w-100">
+                                        @Html.LabelFor(p => p.LastName, new { @class = "mb-2 text-muted" })
+                                        @Html.TextBoxFor(p => p.LastName, new { @class = "form-control", @required = true })
+                                        @Html.ValidationMessageFor(p => p.LastName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    @Html.LabelFor(p => p.Gender, new { @class = "mb-2 text-muted" })
+                                    <br />
+                                    <div class="w-100 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            @Html.RadioButtonFor(p => p.Gender, 1)
+                                            <span class="text-muted">Nam</span>
+                                        </div>
+                                        <div>
+                                            @Html.RadioButtonFor(p => p.Gender, 2)
+                                            <span class="text-muted">Nữ</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="w-100">
+                                        @Html.LabelFor(p => p.PhoneNumber, new { @class = "mb-2 text-muted" })
+                                        @Html.TextBoxFor(p => p.PhoneNumber, new { @class = "form-control", @required = true })
+                                        @Html.ValidationMessageFor(p => p.PhoneNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="w-100">
+                                        @Html.LabelFor(p => p.Email, new { @class = "mb-2 text-muted" })
+                                        @Html.TextBoxFor(p => p.Email, new { @class = "form-control", @required = true })
+                                        @Html.ValidationMessageFor(p => p.Email, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="w-100">
+                                        @Html.LabelFor(p => p.Password, new { @class = "mb-2 text-muted" })
+                                        @Html.TextBoxFor(p => p.Password, new { @class = "form-control", @required = true })
+                                        @Html.ValidationMessageFor(p => p.Password, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="w-100">
+                                        @Html.LabelFor(p => p.ConfirmPassword, new { @class = "mb-2 text-muted" })
+                                        @Html.TextBoxFor(p => p.ConfirmPassword, new { @class = "form-control", @required = true })
+                                        @Html.ValidationMessageFor(p => p.ConfirmPassword, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                
+                                <div class="w-100 d-flex justify-content-center align-items-center">
+                                    <button id="btn-register" type="submit" class="btn btn-primary ms-auto">
+                                        Đăng ký
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer py-2 border-0">
+                            <div class="text-center text-muted fw-lighter">
+                                @Html.ActionLink("Đăng nhập", "Login", "Account", new { @class = "text-reset text-decoration-none" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="~/Assets/Client/Scripts/account.js"></script>
+</body>
+</html>

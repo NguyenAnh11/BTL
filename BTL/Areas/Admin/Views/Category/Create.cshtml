@@ -1,0 +1,87 @@
+﻿@model BTL.Areas.Admin.ViewModel.CategoryModel
+@{
+    ViewBag.Title = "Tạo mới danh mục";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div class="py-1 px-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bolder">Thêm mới danh mục</h2>
+            <div class="d-inline-block">
+                <button class="btn btn-primary">
+                    Lưu
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-3">
+        <div class="form-horizontal">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <i class="fs-6 fw-light fa fa-info" aria-hidden="true"></i>
+                                <p class="pt-2 px-4 fs-6">Thông tin danh mục</p>
+                            </div>
+                            <div class="col-md-8"></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Tên danh mục</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(p => p.Name, new { @id = "category-name", @type = "text", @class = "form-control form-control-sm" })
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <div class="col-md-3">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Mô tả ngắn danh mục</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(p => p.ShortDescription, new { @id = "category-short-description", @type = "text", @class = "form-control form-control-sm" })
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <div class="col-md-3">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Mô tả danh mục</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(p => p.Description, new { @id = "category-description", @type = "text", @class = "form-control form-control-sm" })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Danh mục cha</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.DropDownListFor(p => p.ParentCategoryId, new SelectList(Model.AvaliableCategories.Items, "Value", "Text", 0), new { @id = "category-published-id", @class = "form-select form-select-sm" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

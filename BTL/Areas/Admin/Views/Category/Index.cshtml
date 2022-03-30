@@ -1,0 +1,198 @@
+﻿@model BTL.Areas.Admin.ViewModel.CategorySearchModel
+@{
+    ViewBag.Title = "Danh mục";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div class="py-1 px-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bolder">Danh mục</h2>
+            <div class="d-inline-block">
+                <a class="btn btn-primary" href='@Url.Action("Create", "Category")'>
+                    <span>Thêm mới</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fs-4 fw-light fa fa-search" aria-hidden="true"></i>
+                                    <p class="pt-2 px-4 fs-4">Tìm kiếm</p>
+                                </div>
+                            </div>
+                            <div class="col-md-8"></div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-md-4">
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <p class="fw-lighter">Mã danh mục</p>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.CategoryId, new { @id = "category-id", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập mã danh mục" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <p class="fw-lighter">Tên danh mục</p>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.CategoryName, new { @id = "category-name", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập mã danh mục" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <p class="fw-lighter">Tình trạng</p>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(p => p.CategoryPublishdStatusId, new SelectList(Model.CategoryPublishStatus.Items, "Value", "Text", 0), new { @id = "category-published-id", @class = "form-select form-select-sm", })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="form-group row">
+                                    <div class="text-center col-12">
+                                        <button type="button" id="search-categories" class="btn btn-outline-info">
+                                            <i class="fas fa-search pr-2"></i>
+                                            Tìm kiếm
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <table id="table-categories" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Mã</th>
+                                    <th scope="col">Tên</th>
+                                    <th scope="col">Tình trạng</th>
+                                    <th scope="col">Thứ tự</th>
+                                    <th scope="col">Sửa</th>
+                                    <th scope="col">Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-categories-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+        function clearCategoriesTable() {
+            $("#table-categories-body").empty();
+        }
+        function fillCategoriesTable(arr) {
+            console.log(arr);
+            let table = '';
+            if (arr.length > 0) {
+                for (let i = 0; i < arr.length; i++) {
+                    table += '<tr>';
+
+                    table += '<th scope="row">' + arr[i].Id + '</th>';
+
+                    table += '<th>' + arr[i].Breadcrumb + '</th>';
+
+                    let icon = arr[i].IsPublished == true ? '<i class="fa fa-check" aria-hidden="true"></i>' : '<i class="fa fa-times" aria-hidden="true"></i>'
+                    table += '<th>' + icon + '</th>';
+
+                    table += '<th>' + arr[i].DisplayOrder + '</th>';
+
+                    let editUrl = "~/Admin/Category/Edit/" + arr[i].Id;
+                    console.log(editUrl);
+                    table += '<th>' + ' <a class="btn btn-secondary btn-sm"';
+                    table += 'href=' + editUrl + '> ';
+                    table += '<span>Sửa</span>'
+                    table += '</a >' + '</th>';
+
+                    let deleteUrl = "~/Admin/Category/Delete/" + arr[i].Id;
+                    console.log(deleteUrl);
+
+                    table += '<th>' + ' <a class="btn btn-danger btn-sm"';
+                    table += 'href=' + deleteUrl + '> ';
+                    table += '<span>Xóa</span>'
+                    table += '</a >' + '</th>';
+
+                    table += '</tr>'
+                }
+            }
+            else {
+                table += '<tr>';
+                table += '<th colspan="6" class="text-center">';
+                table += '<p class="text-danger">Không có dữ liệu</p>'
+                table += '</th>';
+                table += '</tr>';
+            }
+
+            $('#table-categories-body').append(table);
+        }
+
+        function loadCategoriesTable(categoryId = 0, categoryName = '', categoryPublishedStatusId = 0) {
+            $.ajax({
+                url: '/Admin/Category',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    'CategoryId': categoryId,
+                    'CategoryName': categoryName,
+                    'CategoryPublishdStatusId': categoryPublishedStatusId
+                }),
+                success: function (response) {
+                    clearCategoriesTable();
+                    fillCategoriesTable(response);
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                complete: function () {
+                    setTimeout(() => {
+                        $("#loading").css({
+                            "display": "none"
+                        })
+                    }, 500)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            //show loading
+            $("#loading").css({
+                "display": "block"
+            })
+
+            loadCategoriesTable();
+
+            $('#search-categories').on('click', function (e) {
+                let categoryId = $('#category-id').val();
+                let categoryName = $('#category-name').val();
+                let categoryPublishedId = $('#category-published-id').val();
+
+                //show loading
+                $("#loading").css({
+                    "display": "block"
+                })
+                //load data
+                loadCategoriesTable(categoryId, categoryName, categoryPublishedId);
+            })
+        })
+    </script>
+}
