@@ -18,7 +18,9 @@ namespace BTL.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<UserPassword> UserPasswords { get; set; }
+        public DbSet<ProductPicture> ProductPicture { get; set; }
         public ShopDbContext() : base("Shop") 
         {
             
@@ -27,15 +29,17 @@ namespace BTL.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<CategoryProduct>().HasKey(p => new { p.CategoryId, p.ProductId });
-            modelBuilder.Entity<CategoryManufacturer>().HasKey(p => new { p.CategoryId, p.ManufacturerId });
-            modelBuilder.Entity<OrderItem>().HasKey(p => new { p.OrderId, p.ProductId });
+            modelBuilder.Entity<CategoryProduct>().HasKey(p => p.Id);
+            modelBuilder.Entity<CategoryManufacturer>().HasKey(p => p.Id);
+            modelBuilder.Entity<OrderItem>().HasKey(p => p.Id);
+            modelBuilder.Entity<ProductPicture>().HasKey(p => p.Id);
+            modelBuilder.Entity<UserRole>().HasKey(p => p.Id);
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (typeof(ISoftDeletedEntity).IsAssignableFrom(entry.GetType()))
+                if (typeof(ISoftDeletedEntity).IsAssignableFrom(entry.Entity.GetType()))
                 {
                     switch (entry.State)
                     {
@@ -44,6 +48,7 @@ namespace BTL.Data
                             break;
                         case EntityState.Deleted:
                             entry.Property("IsDeleted").CurrentValue = true;
+                            entry.State = EntityState.Modified;
                             break;
                         default:
                             entry.Property("IsDeleted").CurrentValue = entry.Property("IsDeleted").OriginalValue;
@@ -51,7 +56,7 @@ namespace BTL.Data
                     }
                 }
 
-                if (typeof(IDateCreatedEntity).IsAssignableFrom(entry.GetType()))
+                if (typeof(IDateCreatedEntity).IsAssignableFrom(entry.Entity.GetType()))
                 {
                     switch (entry.State)
                     {
@@ -61,7 +66,7 @@ namespace BTL.Data
                     }
                 }
 
-                if (typeof(IDateUpdatedEntity).IsAssignableFrom(entry.GetType()))
+                if (typeof(IDateUpdatedEntity).IsAssignableFrom(entry.Entity.GetType()))
                 {
                     switch (entry.State)
                     {

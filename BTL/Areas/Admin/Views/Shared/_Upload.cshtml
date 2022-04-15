@@ -1,0 +1,40 @@
+﻿@{ 
+    var pictureUrl = ViewData["PictureUrl"].ToString();
+    var pictureId = ViewData["PictureId"].ToString();
+}
+
+<div class="form-group row d-flex">
+    <div class="col-md-3">
+        <div class="float-end">
+            <p class="fw-lighter">Ảnh</p>
+            
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div>
+            <input id="picture" type="file" name="file" hidden/>
+            <p id="picture-id" class="d-none">@pictureId</p>
+        </div>
+        <div class="d-table-row w-100">
+            <div class="d-table-cell">
+                <img 
+                    id="img" 
+                    src=@pictureUrl
+                    class="img-thumbnail" 
+                    style="width: 100px; height: 100px"
+                  />
+            </div>
+            <div class="d-table-cell px-3">
+                <button id="btn-upload" class="btn btn-success">
+                    Upload
+                </button>
+            </div>
+            <div class="d-table-cell px-3">
+                <button id="btn-upload-remove" disabled class="btn btn-danger">
+                    Remove
+                </button>
+            </div>
+            <div id="upload-error" class="text-danger"></div>
+        </div>
+    </div>
+</div>

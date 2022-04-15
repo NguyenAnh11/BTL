@@ -1,303 +1,210 @@
 ﻿using BTL.Areas.Admin.ViewModel;
 using BTL.Data;
-using BTL.Filters;
-using BTL.Helpers;
 using BTL.Models;
+using BTL.Services;
+using BTL.Extensions;
+using BTL.Helpers;
+using BTL.Filters;
 using System;
-using System.Data.Entity;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace BTL.Areas.Admin.Controllers
 {
     [SessionAuthorize]
     public class UserController : Controller
     {
-        private readonly ShopDbContext _db = new ShopDbContext();
+        private readonly ShopDbContext _db;
+        private readonly ICommonService _commonService;
+        private readonly IPictureService _pictureService;
+        private readonly IDateTimeService _dateService;
+        private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
+
+        public UserController(
+            ShopDbContext db, 
+            ICommonService commonService, 
+            IPictureService pictureService,
+            IDateTimeService dateTimeService,
+            IUserService userService, 
+            IRoleService roleService)
+        {
+            _db = db;   
+            _commonService = commonService;
+            _pictureService = pictureService;
+            _dateService = dateTimeService; 
+            _userService = userService;
+            _roleService = roleService; 
+        }
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            var users = await _db.Users.Where(p => !p.IsDeleted)
-                .AsNoTracking()
-                .Include(p => p.Role)
-                .Select(p => new UserModel
-                {
-                    Id = p.Id,
-                    Name = p.FirstName + " " + p.LastName,
-                    Email = p.Email,
-                    Phone = p.Phone,
-                    Gender = p.Gender == 0 ? "Nam" : "Nữ",
-                    RoleName = p.Role.Name
-                })
-                .ToListAsync();
+            ViewBag.AvaliableRoles = await _commonService.PrepareAvaliableRolesAsync();
 
-            return View(users);
-        }
-        [Route("{id}")]
-        [HttpGet]
-        public async Task<ActionResult> Details(int id)
-        {
-            var user = await _db.Users
-                .AsNoTracking()
-                .Include(p => p.Role)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (user == null || user.IsDeleted)
+            return View(new UserSearchModel()
             {
-                return HttpNotFound();
+                RoleId = new int[] { 0 }
+            });
+        }
+        [HttpPost]
+        public async Task<ActionResult> Index(UserSearchModel searchModel)
+        {
+            var users = await _userService.GetAllAsync((query) =>
+            {
+                if(searchModel.Id != 0)
+                {
+                    query = query.Where(p => p.Id == searchModel.Id);
+                }
+
+                if(!searchModel.Email.IsEmpty())
+                {
+                    query = query.Where(p => p.Email.Contains(searchModel.Email));  
+                }
+
+                if(!searchModel.Phone.IsEmpty())
+                {
+                    query = query.Where(p => p.Phone == searchModel.Phone);
+                }
+
+                if(searchModel.RoleId.Length > 0)
+                {
+                    var roleIds = searchModel.RoleId.ToList();
+
+                    if (roleIds.Contains(0))
+                        roleIds.Remove(0);
+
+                    if(roleIds.Count > 0)
+                    {
+                        var source = _db.Set<UserRole>().Where(p => roleIds.Contains(p.Id)).Distinct().ToList();
+
+                        query = query.Join(source, u => u.Id, ur => ur.UserId, (u, ur) => u);
+                    }    
+                }
+
+                return query;
+            }); 
+
+            var models = new List<UserModel>(); 
+
+            foreach(var user in users)
+            {
+                var model = new UserModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    Gender = user.Gender,
+                    CreateAt = _dateService.Format(user.CreateAt),
+                    PictureId = user.PictureId ?? 0,
+                    PictureUrl = await _pictureService.GetPictureUrlAsync(user.PictureId ?? 0, PictureType.Avatar),
+                };
+
+                var roles = await _roleService.GetRolesByUserAsync(user);
+
+                model.RoleId = roles.Select(p => p.Id).ToArray();
+                model.Role = string.Join(" ", roles.Select(p => p.Name));
+
+                models.Add(model);
             }
 
-            ViewBag.Roles = new SelectList((await _db.Roles.Where(p => p.IsActive).ToListAsync()), "Id", "Name", user.RoleId);
-
-            var model = new UserModel()
-            {
-                Id = user.Id,
-                Name = user.FirstName + " " + user.LastName,
-                Email = user.Email,
-                Phone = user.Phone,
-                Gender = user.Gender == 0 ? "Nam" : "Nữ",
-                PictureUrl = user.PictureUrl,
-                RoleName = user.Role.Name
-            };
-
-            return View(model);
-
+            return Json(new { data = models }, JsonRequestBehavior.AllowGet); ;
         }
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            ViewBag.Roles = new SelectList((await _db.Roles.Where(p => p.IsActive).ToListAsync()), "Id", "Name");
+            var avaliableRole = await _commonService.PrepareAvaliableRolesAsync(false);
 
-            return View();
+            var registerRole = await _roleService.GetRoleByNameAsync(ConstraintHelper.ROLE_REGISTER);
+
+            foreach(var role in avaliableRole)
+            {
+                if(int.TryParse(role.Value, out int roleId) && roleId == registerRole.Id)
+                {
+                    role.Selected = true;
+                }    
+            }    
+
+            ViewBag.AvaliableRoles = avaliableRole;
+
+            var model = new UserModel
+            {
+                PictureId = 0,
+                PictureUrl = await _pictureService.GetPictureUrlAsync(0, PictureType.Avatar),
+                RoleId = new int[] { registerRole.Id },
+            };
+
+            return View(model);
         }
         [HttpPost]
-        public async Task<ActionResult> Create(UserCreateUpdateModel model)
+        public async Task<ActionResult> Create(UserModel model)
         {
-            ViewBag.Roles = new SelectList((await _db.Roles.Where(p => p.IsActive).ToListAsync()), "Id", "Name", model.RoleId);
-
-            if (model.Gender == null)
-            {
-                ViewBag.Error = "Chọn giới tính";
-                return View(model);
-            }
-
-            var user = await _db.Users.FirstOrDefaultAsync(p => p.Email == model.Email);
-            if (user != null)
-            {
-                ViewBag.Error = "Email đã tồn tại";
-                return View(model);
-            }
-            user = await _db.Users.FirstOrDefaultAsync(p => p.Phone == model.Phone);
-            if (user != null)
-            {
-                ViewBag.Error = "Số điện thoại đã tồn tại";
-                return View(model);
-            } 
-
-            var pictureUrl = string.Empty;
-
-            if (model.Image != null && model.Image.ContentLength > 0)
-            {
-                var (error, msg) = GetPictureUrlFromFile(model.Image);
-
-                if (error)
-                {
-                    ViewBag.Error = error;
-                    return View(model);
-                }
-                else
-                {
-                    pictureUrl = msg;
-                }
-            }
-
-            if (model.RoleId == 0)
-            {
-                ViewBag.Error = "Chọn chức vụ";
-                return View(model);
-            }
-
             using (var transaction = _db.Database.BeginTransaction())
             {
                 try
                 {
+                    if(!CommonHelper.IsValidEmail(model.Email))
+                    {
+                        return Json(new { success = false, msg = "Email không hợp lệ" });
+                    }  
+                    
+                    if(!CommonHelper.IsValidPhone(model.Phone))
+                    {
+                        return Json(new { success = false, msg = "Số điện thoại chỉ chứa số và 10 ký tự " });
+                    }    
+
+                    var user = await _userService.GetUserByEmailAsync(model.Email);
+
+                    if(user != null)
+                    {
+                        return Json(new { success = false, msg = "Email đã tồn tại" });
+                    }    
+
+                    user = await _userService.GetUserByPhoneAsync(model.Phone);
+
+                    if(user != null)
+                    {
+                        return Json(new { success = false, msg = "Số điện thoại đã tồn tại" });
+                    }
+
                     user = new User
                     {
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Email = model.Email,
                         Phone = model.Phone,
-                        Gender = model.Gender.Value,
+                        Gender = model.Gender
                     };
 
-                    if (!string.IsNullOrEmpty(pictureUrl))
-                    {
-                        user.PictureUrl = pictureUrl;
-                    }
+                    if (model.PictureId == 0)
+                        user.PictureId = null;
+                    else
+                        user.PictureId = model.PictureId;
 
-                    user.RoleId = model.RoleId;
-
-                    //password account
-                    var saltKey = HashHelper.CreateSaltKey(ConstraintHelper.PASSWORD_SALTKEYSIZE);
-                    var password = HashHelper.CreatePasswordHash(ConstraintHelper.PASSWORD_DEFAULT, saltKey, ConstraintHelper.PASSWORD_HASHALGORITHM);
-
-                    _db.UserPasswords.Add(new UserPassword
-                    {
-                        SaltKey = saltKey,
-                        Password = password,
-                        User = user
-                    });
+                    _db.Set<User>().Add(user);
 
                     await _db.SaveChangesAsync();
 
-                    transaction.Commit();
+                    //save role
+                    await _userService.SaveUserToRoleAsync(user, model.RoleId);
 
-                    //save image
-                    if (!string.IsNullOrEmpty(pictureUrl))
-                    {
-                        model.Image.SaveAs(pictureUrl);
-                    }
-                }
-                catch
-                {
-                    transaction.Rollback();
-                    ViewBag.Error = "Có lỗi xảy ra";
-                }
-            }
-
-            return RedirectToAction("Index", "User", new { Area = "Admin" });
-        } 
-        [Route("{id}")]
-        [HttpGet]
-        public async Task<ActionResult> Edit(int id)
-        {
-            var user = await _db.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (user == null || user.IsDeleted)
-            {
-                return HttpNotFound();
-            }
-
-            ViewBag.Roles = new SelectList((await _db.Roles.Where(p => p.IsActive).ToListAsync()), "Id", "Name", user.RoleId);
-
-            var model = new UserCreateUpdateModel
-            {
-                Id = id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Gender = user.Gender,
-                Email = user.Email,
-                Phone = user.Phone,
-                RoleId = user.RoleId
-            };
-
-            return View(model);
-        }
-        [HttpPost]
-        public async Task<ActionResult> Edit(UserCreateUpdateModel model)
-        {
-            ViewBag.Roles = new SelectList((await _db.Roles.Where(p => p.IsActive).ToListAsync()), "Id", "Name", model.RoleId);
-
-            if(model.Gender == null)
-            {
-                ViewBag.Error = "Chọn giới tính";
-                return View(model);
-            }    
-
-            var user = await _db.Users.FirstOrDefaultAsync(p => p.Id == model.Id);
-
-            using (var transaction = _db.Database.BeginTransaction())
-            {
-                try
-                {
-                    var pictureUrl = string.Empty;
-
-                    if (model.Image != null && model.Image.ContentLength > 0)
-                    {
-                        var (err, msg) = GetPictureUrlFromFile(model.Image);
-
-                        if (err)
-                        {
-                            ViewBag.Error = msg;
-                            return View(model);
-                        }
-                        else
-                        {
-                            pictureUrl = msg;
-                        }
-                    }
-
-                    user.FirstName = model.FirstName;
-                    user.LastName = model.LastName;
-                    user.RoleId = model.RoleId;
-                    user.Gender = model.Gender.Value;
-                    
-                    var previousUrl = user.PictureUrl;
-
-                    if (!string.IsNullOrEmpty(pictureUrl))
-                    {
-                        //delete previous image
-                        if (!string.IsNullOrEmpty(previousUrl))
-                        {
-                            System.IO.File.Delete(previousUrl);
-                        }
-
-                        model.Image.SaveAs(pictureUrl);
-
-                        user.PictureUrl = pictureUrl;
-                    }
-
-                    await _db.SaveChangesAsync();
+                    //save password
+                    await _userService.SaveUserToPasswordAsync(user, ConstraintHelper.PASSWORD_DEFAULT);
 
                     transaction.Commit();
+
+                    return Json(new { success = true }, JsonRequestBehavior.AllowGet);
                 }
-                catch
+                catch (Exception ex)
                 {
                     transaction.Rollback();
-                    ViewBag.Error = "Có lỗi xảy ra";
+
+                    throw ex;
                 }
             }
-
-            return RedirectToAction("Index");
-        }
-        [Route("{id}")]
-        [HttpGet]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var user = await _db.Users.FirstOrDefaultAsync(p => p.Id == id);
-
-            if(user == null || user.IsDeleted)
-            {
-                return HttpNotFound();
-            }
-
-            _db.Users.Remove(user);
-
-            await _db.SaveChangesAsync();
-
-            return RedirectToAction("Index");
-        }
-        private (bool, string) GetPictureUrlFromFile(HttpPostedFileBase file)
-        {
-            var extension = Path.GetExtension(file.FileName);
-            var allowExtensions = ConstraintHelper.PICTURE_ALLOW_EXTENSIONS.Split('|');
-            if (!allowExtensions.Any(p => p == extension))
-            {
-                return (true, "Định dạng file không đúng");
-            }
-
-            var pictureName = Guid.NewGuid().ToString() + extension;
-            var pictureDirectory = ConstraintHelper.PICTURE_DIRECTORY;
-
-            var pictureUrl = Path.Combine(pictureDirectory, pictureName);
-
-            return (false, pictureUrl);
         }
     }
 }

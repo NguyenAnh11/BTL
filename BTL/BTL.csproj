@@ -46,13 +46,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=6.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.6.3.0\lib\netstandard2.0\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=6.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.6.0.0\lib\net472\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
     </Reference>
@@ -60,8 +75,27 @@
       <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -130,30 +164,111 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ManufacturerController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ImageController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ProductController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
+    <Compile Include="Areas\Admin\ViewModel\BaseSearchModel.cs" />
+    <Compile Include="Areas\Admin\ViewModel\IPagedList.cs" />
+    <Compile Include="Areas\Admin\ViewModel\PagedList.cs" />
+    <Compile Include="Areas\Admin\ViewModel\ProductModel.cs" />
+    <Compile Include="Areas\Admin\ViewModel\ProductPictureModel.cs" />
+    <Compile Include="Areas\Admin\ViewModel\UserSearchModel.cs" />
+    <Compile Include="Controllers\CartController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="Filters\HandleExceptionAttribute.cs" />
+    <Compile Include="Helpers\CommonHelper.cs" />
+    <Compile Include="Migrations\202203311319052_Init.cs" />
+    <Compile Include="Migrations\202203311319052_Init.designer.cs">
+      <DependentUpon>202203311319052_Init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204010234456_add_display_order_product.cs" />
+    <Compile Include="Migrations\202204010234456_add_display_order_product.designer.cs">
+      <DependentUpon>202204010234456_add_display_order_product.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204031350567_change_picture.cs" />
+    <Compile Include="Migrations\202204031350567_change_picture.designer.cs">
+      <DependentUpon>202204031350567_change_picture.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204040206484_remove-mimeType-Picture.cs" />
+    <Compile Include="Migrations\202204040206484_remove-mimeType-Picture.designer.cs">
+      <DependentUpon>202204040206484_remove-mimeType-Picture.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204040358005_remove-fileName-category.cs" />
+    <Compile Include="Migrations\202204040358005_remove-fileName-category.designer.cs">
+      <DependentUpon>202204040358005_remove-fileName-category.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204061410039_add_relationship_manufacturer_picture.cs" />
+    <Compile Include="Migrations\202204061410039_add_relationship_manufacturer_picture.designer.cs">
+      <DependentUpon>202204061410039_add_relationship_manufacturer_picture.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204070031292_change_null_pictureId_manufacturer.cs" />
+    <Compile Include="Migrations\202204070031292_change_null_pictureId_manufacturer.designer.cs">
+      <DependentUpon>202204070031292_change_null_pictureId_manufacturer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204070948020_update_user_table.cs" />
+    <Compile Include="Migrations\202204070948020_update_user_table.designer.cs">
+      <DependentUpon>202204070948020_update_user_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204080201320_update_picture_id_allow_null.cs" />
+    <Compile Include="Migrations\202204080201320_update_picture_id_allow_null.designer.cs">
+      <DependentUpon>202204080201320_update_picture_id_allow_null.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204080232396_remove_birthday_table_user.cs" />
+    <Compile Include="Migrations\202204080232396_remove_birthday_table_user.designer.cs">
+      <DependentUpon>202204080232396_remove_birthday_table_user.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204080236210_remove_user.cs" />
+    <Compile Include="Migrations\202204080236210_remove_user.designer.cs">
+      <DependentUpon>202204080236210_remove_user.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\BaseEntity.cs" />
+    <Compile Include="Models\Picture.cs" />
+    <Compile Include="Models\PictureType.cs" />
+    <Compile Include="Models\ProductPicture.cs" />
+    <Compile Include="Models\UserRole.cs" />
+    <Compile Include="Services\AbstractEntityService.cs" />
+    <Compile Include="Services\AbstractSoftDeleteEntityService.cs" />
+    <Compile Include="Services\AuthenticateService.cs" />
+    <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Services\CommonService.cs" />
+    <Compile Include="Services\DateTimeService.cs" />
+    <Compile Include="Services\EncryptionService.cs" />
+    <Compile Include="Services\IAbstractEntityService.cs" />
+    <Compile Include="Services\IAuthenticateService.cs" />
+    <Compile Include="Services\ICategoryService.cs" />
+    <Compile Include="Services\ICommonService.cs" />
+    <Compile Include="Services\IDateTimeService.cs" />
+    <Compile Include="Services\IEncryptionService.cs" />
+    <Compile Include="Services\IManufacturerService.cs" />
+    <Compile Include="Services\IPictureService.cs" />
+    <Compile Include="Services\IProductService.cs" />
+    <Compile Include="Services\IRoleService.cs" />
+    <Compile Include="Services\IUserService.cs" />
+    <Compile Include="Services\ManufacturerService.cs" />
+    <Compile Include="Services\PictureService.cs" />
+    <Compile Include="Services\ProductService.cs" />
     <Compile Include="Areas\Admin\ViewModel\CategoryModel.cs" />
     <Compile Include="Areas\Admin\ViewModel\CategorySearchModel.cs" />
-    <Compile Include="Areas\Admin\ViewModel\UserCreateUpdateModel.cs" />
+    <Compile Include="Areas\Admin\ViewModel\ManufacturerModel.cs" />
+    <Compile Include="Areas\Admin\ViewModel\ManufacturerSearchModel.cs" />
+    <Compile Include="Areas\Admin\ViewModel\ProductSearchModel.cs" />
     <Compile Include="Areas\Admin\ViewModel\UserModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Data\ShopDbContext.cs" />
     <Compile Include="Filters\SessionAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ConstraintHelper.cs" />
-    <Compile Include="Helpers\HashHelper.cs" />
-    <Compile Include="Migrations\202203290308226_Init.cs" />
-    <Compile Include="Migrations\202203290308226_Init.designer.cs">
-      <DependentUpon>202203290308226_Init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CategoryManufacturer.cs" />
     <Compile Include="Models\CategoryProduct.cs" />
@@ -169,42 +284,139 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserPassword.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\Account\LoginViewModel.cs" />
-    <Compile Include="ViewModels\Account\RegisterViewModel.cs" />
+    <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\UserService.cs" />
+    <Compile Include="ViewModels\CartModel.cs" />
+    <Compile Include="ViewModels\CategoryModel.cs" />
+    <Compile Include="ViewModels\HomeModel.cs" />
+    <Compile Include="ViewModels\LoginModel.cs" />
+    <Compile Include="ViewModels\PictureModel.cs" />
+    <Compile Include="ViewModels\ProductModel.cs" />
+    <Compile Include="ViewModels\RegisterModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\PagedList.css" />
-    <Content Include="Scripts\account.index.js" />
+    <Content Include="Content\bootstrap-responsive.min.css" />
+    <Content Include="Content\css\bootstrap.css" />
+    <Content Include="Content\font-awesome.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\responsive.css" />
+    <Content Include="Content\css\ui.css" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\avatars\avatar1.jpg" />
+    <Content Include="Images\avatars\avatar2.jpg" />
+    <Content Include="Images\avatars\avatar3.jpg" />
+    <Content Include="Images\banners\ad-sm.png" />
+    <Content Include="Images\banners\ad.png" />
+    <Content Include="Images\banners\banner-item1.jpg" />
+    <Content Include="Images\banners\banner-item2.jpg" />
+    <Content Include="Images\banners\banner-item3.jpg" />
+    <Content Include="Images\banners\banner1.jpg" />
+    <Content Include="Images\banners\banner2.jpg" />
+    <Content Include="Images\banners\banner3.jpg" />
+    <Content Include="Images\banners\banner4.jpg" />
+    <Content Include="Images\banners\banner5.jpg" />
+    <Content Include="Images\banners\banner6.jpg" />
+    <Content Include="Images\banners\banner7.jpg" />
+    <Content Include="Images\banners\banner8.jpg" />
+    <Content Include="Images\banners\banner9.jpg" />
+    <Content Include="Images\banners\slide1.jpg" />
+    <Content Include="Images\banners\slide2.jpg" />
+    <Content Include="Images\banners\slide3.jpg" />
+    <Content Include="Images\favicon.ico" />
+    <Content Include="Images\icons\flags\AU%402x.png" />
+    <Content Include="Images\icons\flags\AU.png" />
+    <Content Include="Images\icons\flags\CN%402x.png" />
+    <Content Include="Images\icons\flags\CN.png" />
+    <Content Include="Images\icons\flags\DE%402x.png" />
+    <Content Include="Images\icons\flags\DE.png" />
+    <Content Include="Images\icons\flags\GB%402x.png" />
+    <Content Include="Images\icons\flags\GB.png" />
+    <Content Include="Images\icons\flags\IN%402x.png" />
+    <Content Include="Images\icons\flags\IN.png" />
+    <Content Include="Images\icons\flags\RU%402x.png" />
+    <Content Include="Images\icons\flags\RU.png" />
+    <Content Include="Images\icons\flags\TR%402x.png" />
+    <Content Include="Images\icons\flags\TR.png" />
+    <Content Include="Images\icons\flags\US%402x.png" />
+    <Content Include="Images\icons\flags\US.png" />
+    <Content Include="Images\icons\flags\UZ%402x.png" />
+    <Content Include="Images\icons\flags\UZ.png" />
+    <Content Include="Images\icons\pay-american-ex.png" />
+    <Content Include="Images\icons\pay-bank.png" />
+    <Content Include="Images\icons\pay-mastercard.png" />
+    <Content Include="Images\icons\pay-visa-el.png" />
+    <Content Include="Images\icons\pay-visa.png" />
+    <Content Include="Images\items\1.jpg" />
+    <Content Include="Images\items\10.jpg" />
+    <Content Include="Images\items\11.jpg" />
+    <Content Include="Images\items\12.jpg" />
+    <Content Include="Images\items\13.jpg" />
+    <Content Include="Images\items\14.jpg" />
+    <Content Include="Images\items\15-1.jpg" />
+    <Content Include="Images\items\15-2.jpg" />
+    <Content Include="Images\items\15.jpg" />
+    <Content Include="Images\items\2.jpg" />
+    <Content Include="Images\items\3.jpg" />
+    <Content Include="Images\items\4.jpg" />
+    <Content Include="Images\items\5.jpg" />
+    <Content Include="Images\items\6.jpg" />
+    <Content Include="Images\items\7.jpg" />
+    <Content Include="Images\items\8.jpg" />
+    <Content Include="Images\items\9.jpg" />
+    <Content Include="Images\logo-white.png" />
+    <Content Include="Images\logo.png" />
+    <Content Include="Images\logo.svg" />
+    <Content Include="Images\misc\appstore.png" />
+    <Content Include="Images\misc\payments.png" />
+    <Content Include="Images\misc\playmarket.png" />
+    <Content Include="Images\posts\1.jpg" />
+    <Content Include="Images\posts\2.jpg" />
+    <Content Include="Images\posts\3.jpg" />
+    <Content Include="Images\posts\4.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\User\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\User\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\User\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\User\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Category\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Category\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Manufacturer\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Upload.cshtml" />
+    <Content Include="Areas\Admin\Views\Category\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Manufacturer\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Manufacturer\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\User\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\User\Create.cshtml" />
+    <Content Include="Images\.DS_Store" />
+    <Content Include="Images\banners\.DS_Store" />
+    <Content Include="Images\icons\.DS_Store" />
+    <Content Include="Images\items\.DS_Store" />
+    <Content Include="Images\posts\.DS_Store" />
+    <Content Include="Areas\Admin\Views\Shared\_Pagination.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\index.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.amsifyselect.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\script.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -215,12 +427,13 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Cart\CartIcon.cshtml" />
+    <Content Include="Views\Cart\CartMoney.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -239,8 +452,38 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202203290308226_Init.resx">
-      <DependentUpon>202203290308226_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202203311319052_Init.resx">
+      <DependentUpon>202203311319052_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204010234456_add_display_order_product.resx">
+      <DependentUpon>202204010234456_add_display_order_product.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204031350567_change_picture.resx">
+      <DependentUpon>202204031350567_change_picture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204040206484_remove-mimeType-Picture.resx">
+      <DependentUpon>202204040206484_remove-mimeType-Picture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204040358005_remove-fileName-category.resx">
+      <DependentUpon>202204040358005_remove-fileName-category.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204061410039_add_relationship_manufacturer_picture.resx">
+      <DependentUpon>202204061410039_add_relationship_manufacturer_picture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204070031292_change_null_pictureId_manufacturer.resx">
+      <DependentUpon>202204070031292_change_null_pictureId_manufacturer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204070948020_update_user_table.resx">
+      <DependentUpon>202204070948020_update_user_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204080201320_update_picture_id_allow_null.resx">
+      <DependentUpon>202204080201320_update_picture_id_allow_null.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204080232396_remove_birthday_table_user.resx">
+      <DependentUpon>202204080232396_remove_birthday_table_user.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204080236210_remove_user.resx">
+      <DependentUpon>202204080236210_remove_user.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
@@ -259,9 +502,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>50332</DevelopmentServerPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50332/</IISUrl>
+          <IISUrl>http://localhost:50591/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

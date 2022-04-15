@@ -1,22 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
 
 namespace BTL.Areas.Admin.ViewModel
 {
     public class UserModel
     {
-        [Display(Name = "Mã nguời dùng")]
         public int Id { get; set; }
-        [Display(Name = "Tên người dùng")]
-        public string Name { get; set; }
-        [Display(Name = "Email")]
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Email { get; set; }
-        [Display(Name = "Số điện thoại")]
         public string Phone { get; set; }
-        [Display(Name = "Giới tính")]
-        public string Gender { get; set; }
-        [Display(Name = "Chức vụ")]
-        public string RoleName { get; set; }
-        [Display(Name = "Ảnh")]
-        public string PictureUrl { get; set; }  
+        public int Gender { get; set; }
+        public string CreateAt { get; set; }
+        public string LastActivity { get; set; }
+        public int PictureId { get; set; }
+        public string PictureUrl { get; set; }
+        public int[] RoleId { get; set; }
+        public string Role { get; set; }
     }
 }

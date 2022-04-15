@@ -1,62 +1,69 @@
-﻿using BTL.Data;
-using BTL.Helpers;
+﻿using BTL.ViewModels.Account;
+using BTL.Data;
 using BTL.Models;
-using BTL.ViewModels.Account;
+using BTL.Services;
+using BTL.Helpers;
 using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace BTL.Controllers
 {
-    [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
-        private readonly ShopDbContext _db = new ShopDbContext();
+        private readonly ShopDbContext _db;
+        private readonly IRoleService _roleService;
+        private readonly IUserService _userService; 
+        private readonly IEncryptionService _encryptionService;
+        private readonly IAuthenticateService _authenticateService;
+        public AccountController(
+            ShopDbContext db,
+            IRoleService roleService, 
+            IUserService userService,
+            IEncryptionService encryptionService,
+            IAuthenticateService authenticateService)
+        {
+            _db = db;
+            _roleService = roleService; 
+            _userService = userService; 
+            _encryptionService = encryptionService;
+            _authenticateService = authenticateService;
+        }
         [HttpGet]
         public ActionResult Login()
         {
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> Login(LoginViewModel model)
+        public async Task<ActionResult> Login(LoginModel model)
         {
-            if (!ModelState.IsValid)
+            var (msg, user) = await _authenticateService.SignInUserAsync(model.Email, model.Password);
+
+            if(user == null)
             {
-                return View(model);
+                return Json(new { success = false, msg }, JsonRequestBehavior.AllowGet);
             }
 
-            var user = await _db.Users.FirstOrDefaultAsync(p => p.Email == model.Email);
-            if (user == null || user.IsDeleted)
-            {
-                ViewBag.Error = $"Email {model.Email} không tồn tại";
-                return View(model);
-            }
-            var userPassword = await _db.UserPasswords.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            var roles = await _roleService.GetRolesByUserAsync(user);
 
-            var password = HashHelper.CreatePasswordHash(model.Password, userPassword.SaltKey, ConstraintHelper.PASSWORD_HASHALGORITHM);
-            if (password != userPassword.Password)
-            {
-                ViewBag.Error = "Email hoặc mật khẩu không đúng";
-                return View(model);
-            }
+            var returnUrl = string.Empty;
 
-            var role = await _db.Roles.FirstOrDefaultAsync(p => p.Id == user.RoleId);
+            bool isAdmin = roles.Any(p => p.Name == ConstraintHelper.ROLE_ADMINSTRATOR);
+
+            if (isAdmin)
+                returnUrl = "/Admin/Product";
+            else
+                returnUrl = "/";
 
             Session["Id"] = user.Id;
             Session["Name"] = string.Join(" ", user.FirstName, user.LastName);
             Session["Email"] = user.Email;
             Session["Phone"] = user.Phone;
-            Session["Role"] = role;
-            
-            if(role.IsAdmin)
-            {
-                return RedirectToAction("Index", "Home", new { Area = "Admin" });
-            }
+            Session["Role"] = roles;
+            Session["IsAdmin"] = isAdmin;
 
-            return RedirectToAction("Index", "Home");
+            return Json(new { success = true, returnUrl = returnUrl }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public ActionResult Register()
@@ -64,59 +71,95 @@ namespace BTL.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterModel model)
         {
-            if(!ModelState.IsValid)
+            if(!CommonHelper.IsValidEmail(model.Email))
             {
-                return View(model);
-            }
+                return Json(new { success = false, msg = "Email không hợp lệ" }, JsonRequestBehavior.AllowGet);
+            }    
 
-            var user = await _db.Users.FirstOrDefaultAsync(p => p.Email == model.Email);
+            if(!CommonHelper.IsValidPhone(model.PhoneNumber))
+            {
+                return Json(new { success = false, msg = "Số điện thoại chỉ chứa số" }, JsonRequestBehavior.AllowGet);
+            }    
+
+            if(!CommonHelper.IsValidPassword(model.Password))
+            {
+                return Json(new { success = false, msg = "Mật khẩu chỉ chứa số và có 6 ký tự" }, JsonRequestBehavior.AllowGet);
+            }    
+
+            if(model.Password != model.ConfirmPassword)
+            {
+                return Json(new { success = false, msg = "Mật khẩu và xác thực mật khẩu không khớp" }, JsonRequestBehavior.AllowGet);
+            }    
+
+            var user = await _userService.GetUserByEmailAsync(model.Email);
+
             if(user != null)
             {
-                ViewBag.Error = $"Email {model.Email} đã tồn tại";
-                return View(model);
+                return Json(new { success = false, msg = "Tài khoản email đã được đăng ký" }, JsonRequestBehavior.AllowGet);
             }
 
-            user = await _db.Users.FirstOrDefaultAsync(p => p.Phone == model.PhoneNumber);
-            if (user != null)
+            user = await _userService.GetUserByPhoneAsync(model.PhoneNumber);
+
+            if(user != null)
             {
-                ViewBag.Error = $"Số điện thoại đã được sử dụng";
-                return View(model);
-            }
+                return Json(new { success = false, msg = "Tài khoản số điện thoại đã được đăng ký" }, JsonRequestBehavior.AllowGet);
+            }    
 
-            user = new User
+            using (var transaction = _db.Database.BeginTransaction())
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                Phone = model.PhoneNumber,
-                Gender = model.Gender,
-            };
+                try
+                {
+                    user = new User
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Gender = model.Gender,
+                        Email = model.Email,
+                        Phone = model.PhoneNumber
+                    };
 
-            var saltKey = HashHelper.CreateSaltKey(ConstraintHelper.PASSWORD_SALTKEYSIZE);
-            var password = HashHelper.CreatePasswordHash(model.Password, saltKey, ConstraintHelper.PASSWORD_HASHALGORITHM);
-            _db.UserPasswords.Add(new UserPassword { Password = password, SaltKey = saltKey, User = user });
+                    _db.Set<User>().Add(user);  
+                    
+                    await _db.SaveChangesAsync();
 
-            var role = await _db.Roles.FirstOrDefaultAsync(p => p.Name == ConstraintHelper.ROLE_REGISTER);
+                    var saltKey = _encryptionService.CreateSaltKey(ConstraintHelper.PASSWORD_SALTKEYSIZE);
+                    var password = _encryptionService.CreatePasswordHash(model.Password, saltKey, ConstraintHelper.PASSWORD_HASHALGORITHM);
 
-            if (role == null)
-                throw new Exception($"Not find role with name {ConstraintHelper.ROLE_REGISTER}");
+                    _db.Set<UserPassword>().Add(new UserPassword
+                    {
+                        UserId = user.Id,
+                        Password = password,
+                        SaltKey = saltKey
+                    });
 
-            user.RoleId = role.Id;
+                    var registerRole = await _roleService.GetRoleByNameAsync(ConstraintHelper.ROLE_REGISTER);
+                    _db.Set<UserRole>().Add(new UserRole
+                    {
+                        RoleId = registerRole.Id,
+                        UserId = user.Id,
+                    });
 
-            _db.Users.Add(user);
+                    await _db.SaveChangesAsync();
 
-            await _db.SaveChangesAsync();
+                    transaction.Commit();
 
-            return RedirectToAction("Login", "Account");
+                    return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }    
         }
         [HttpGet]
         public ActionResult Logout()
         {
             Session.Clear();
 
-            return RedirectToAction("Login", "Account", new { Area = string.Empty });
+            return RedirectToAction("Index", "Home");
         }
     }
 }

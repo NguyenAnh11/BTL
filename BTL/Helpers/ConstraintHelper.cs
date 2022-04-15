@@ -8,10 +8,5 @@
 
         public static string ROLE_REGISTER = "Register";
         public static string ROLE_ADMINSTRATOR = "Adminstrator";
-
-        public static int PAGE_PAGESIZE = 10;
-
-        public static string PICTURE_DIRECTORY = @"D:\Image";
-        public static string PICTURE_ALLOW_EXTENSIONS = ".png|.jpeg|.jpg";
     }
 }

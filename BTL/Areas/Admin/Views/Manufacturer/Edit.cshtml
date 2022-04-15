@@ -1,0 +1,261 @@
+﻿@model BTL.Areas.Admin.ViewModel.ManufacturerModel
+@{
+    ViewBag.Title = "Sửa hãng sản xuất";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div class="py-1 px-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h2 class="fw-bolder">Sửa hãng sản xuất</h2>
+                <small class="m-lg-3 d-flex align-items-center">
+                    <i class="px-2 text-primary fa fa-chevron-circle-left" aria-hidden="true"></i>
+                    <a class="text-primary text-decoration-none fs-5" href='@Url.Action("Index", "Manufacturer")'>
+                        Quay về trang chủ
+                    </a>
+                </small>
+            </div>
+            <div class="d-inline-block">
+                <button id="btn-save-manufacturer" class="btn btn-primary">
+                    Lưu
+                </button>
+                <button id="btn-saveAndEdit-manufacturer" class="btn btn-primary">
+                    Lưu và sửa
+                </button>
+            </div>
+        </div>
+    </div>
+    <p id="edit-manufacturer-error" class="text-danger"></p>
+    <div class="container-fluid mt-3">
+        <div class="form-horizontal">
+            <!--Thông tin danh mục-->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-info" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Thông tin hãng sản xuất</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div>
+                        @Html.TextBoxFor(p => p.Id, new { @id = "manufacturer-id", @type = "text", @class = "d-none form-control form-control-sm" })
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Tên danh mục</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(p => p.Name, new { @id = "manufacturer-name", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập tên hãng sản xuất" })
+                            </div>
+                        </div>
+                        <div class="form-group row my-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Mô tả danh mục</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(p => p.Description, new { @id = "manufacturer-description", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập mô tả" })
+                            </div>
+                        </div>
+                        <div class="form-group row my-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Tạo ngày</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="fw-bolder">@Model.CreateAt</p>
+                            </div>
+                        </div>
+                        <div class="form-group row my-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Cập nhật lần cuối</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="fw-bolder">
+                                    <span>@Model.UpdateAt</span>
+                                </p>
+                            </div>
+                        </div>
+                        @Html.Partial("_Upload", null, new ViewDataDictionary { { "PictureId", Model.PictureId }, { "PictureUrl", Model.PictureUrl } })
+                    </div>
+                </div>
+            </div>
+            <!--Hiển thị hãng -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-television" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Hiển thị hãng</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Trạng thái</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.CheckBoxFor(p => p.IsPublished, new { @id = "manufacturer-isPublished", @class = "form-check-input" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Thứ tự</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.DisplayOrder, new { @id = "manufacturer-displayOrder", @type = "number", @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Seo-->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-globe" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Seo</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row my-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">MetaTitle</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.MetaTitle, new { @id = "manufacturer-metaTitle", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group row my-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">MetaKeyword</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.MetaKeyword, new { @id = "manufacturer-metaKeyword", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group row my-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Meta Description</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.MetaDescription, new { @id = "manufacturer-metaDescription", @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+        function validateManufacturerForm() {
+            const name = $('#manufacturer-name').val();
+
+            if (name.length == 0) {
+                $('#create-manufacturer-error').text("Nhập tên hãng sản xuất");
+                return false;
+            }
+
+            return true;
+        }
+
+        function saveManufacturer(condtinueEdit = false) {
+
+            let id = $('#manufacturer-id').val();
+            let name = $('#manufacturer-name').val();
+            let description = $('#manufacturer-description').val();
+            let pictureId = $('#picture-id').text();
+
+            let isPublished = $('#manufacturer-isPublished').is(':checked') ? true : false;
+            let displayOrder = $('#manufacturer-displayOrder').val();
+
+            let metaTitle = $('#manufacturer-metaTitle').val();
+            let metaKeyword = $('#manufacturer-metaKeyword').val();
+            let metaDescription = $('#manufacturer-metaDescription').val();
+
+            $.ajax({
+                url: '/Admin/Manufacturer/Edit',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    'Id': id,
+                    'Name': name,
+                    'Description': description,
+                    'IsPublished': isPublished,
+                    'DisplayOrder': displayOrder,
+                    'MetaTitle': metaTitle,
+                    'MetaKeyword': metaKeyword,
+                    'MetaDescription': metaDescription,
+                    'PictureId': pictureId
+                }),
+                success: function (response) {
+                    let { id } = response;
+
+                    $('#loading').css({
+                        'display': 'none'
+                    })
+
+                    alert('Cập nhật hãng sản xuất thành công');
+
+                    let returnUrl = condtinueEdit ? "/Admin/Manufacturer/Edit/" + id : "/Admin/Manufacturer";
+
+                    window.location.href = returnUrl;
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                }
+            })
+        }
+
+
+        $(document).ready(function () {
+
+            $('#btn-save-manufacturer').on('click', function (e) {
+
+                if (!validateManufacturerForm()) return;
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                saveManufacturer(false);
+            })
+
+            $('#btn-saveAndEdit-manufacturer').on('click', function (e) {
+
+                if (!validateManufacturerForm()) return;
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                saveManufacturer(true);
+            })
+        })
+    </script>
+}

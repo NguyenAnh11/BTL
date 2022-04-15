@@ -1,57 +1,225 @@
-﻿@model IEnumerable<BTL.Areas.Admin.ViewModel.UserModel>
-
+﻿@model BTL.Areas.Admin.ViewModel.UserSearchModel
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Danh sách người dùng";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Danh sách người dùng</h2>
+<div>
+    <div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bolder">Người dùng</h2>
+            <div class="d-inline-block">
+                <a class="btn btn-primary" href='@Url.Action("Create", "User")'>
+                    <span>Thêm mới</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-2">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card mb-2">
+                    <div class="px-3 py-1">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fs-4 fw-light fa fa-search" aria-hidden="true"></i>
+                                    <p class="pt-2 px-4 fs-4">Tìm kiếm</p>
+                                </div>
+                            </div>
+                            <div class="col-md-8"></div>
+                        </div>
+                        <div class="mt-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <p class="fw-lighter">Mã người dùng</p>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(p => p.Id, new { @id = "user-id", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập mã người dùng" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <p class="fw-lighter">Email</p>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(p => p.Email, new { @id = "user-email", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập email" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <p class="fw-lighter">Số điện thoại</p>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(p => p.Phone, new { @id = "user-phone", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập số điện thoại" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group row">
+                                            <div class="col-md-3">
+                                                <div class="float-end">
+                                                    <p class="fw-lighter">Vai trò</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(p => p.RoleId, ViewBag.AvaliableRoles as List<SelectListItem>, new { @id = "user-roleId", @multiple = "multiple" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="my-2">
+                                <div class="form-group row">
+                                    <div class="text-center col-12">
+                                        <button type="button" id="btn-search-user" class="btn btn-outline-info">
+                                            <i class="fas fa-search pr-2"></i>
+                                            Tìm kiếm
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <table id="table-user" class="table table-bordered table-striped">
+                            <thead>
+                                <tr class="text-center border d-table-row">
+                                    <th scope="col">
+                                        <input id="checkboxs" class="form-check-input" type="checkbox" value="">
+                                    </th>
+                                    <th scope="col">Mã</th>
+                                    <th scope="col">Tên</th>
+                                    <th scope="col">Giới tính</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Vai trò</th>
+                                </tr>
+                            </thead>
+                            <tbody style="display: table-row-group; vertical-align: middle" id="table-user-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    
+    <script type="text/javascript">
 
-<p>
-    @Html.ActionLink("Tạo mới", "Create", "User", htmlAttributes: new { @class = "btn btn-outline-info" })
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Phone)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Gender)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RoleName)
-        </th>
-    </tr>
+        function clearUserTable() {
+            $('#table-user-body').empty();
+        }
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Phone)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Gender)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RoleName)
-        </td>
-        <td>
-            @Html.ActionLink("Sửa", "Edit", new { id=item.Id }, new { @class = "btn btn-info btn-sm" }) |
-            @Html.ActionLink("Chi tiết", "Details", new { id=item.Id }, new { @class = "btn btn-warning btn-sm" }) |
-            @Html.ActionLink("Xóa", "Delete", new { id=item.Id }, new { @class = "btn btn-danger btn-sm" })
-        </td>
-    </tr>
+        function fillUserTable(data) {
+            console.log(data)
+            let table = '';
+            if (data.length > 0) {
+                for (let i = 0; i < data.length; i++) {
+                    table += '<tr class="text-center d-table-row">';
+
+                    table += '<th class="text-center" scope="row">';
+                    table += '<input class="checkbox form-check-input" type="checkbox" value=""';
+                    table += 'data-id=' + data[i].Id + '>';
+                    table += '</th>';
+
+                    table += '<th>' + data[i].Id + '</th>';
+
+                    let name = data[i].FirstName + ' ' + data[i].LastName;
+                    table += '<th>' + name + '</th>';
+
+                    let gender = data[i].Gender == 0 ? 'Nam' : 'Nữ';
+                    table += '<th>' + gender + '</th>';
+
+                    table += '<th>' + data[i].Email + '</th>';
+                    table += '<th>' + data[i].Role + '</th>';
+
+                    table += '</tr>';
+                }
+            }
+            else {
+                table += '<tr>';
+                table += '<th colspan="6" class="text-center">';
+                table += '<p class="text-danger">Không có dữ liệu</p>'
+                table += '</th>';
+                table += '</tr>';
+            }
+
+            $('#table-user-body').append(table)
+        }
+
+        function loadUserTable(id = 0, email = '', phone = '', roleId = null) {
+
+            $.ajax({
+                url: '/Admin/User',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    'Id': id,
+                    'Email': email,
+                    'Phone': phone,
+                    'RoleId': roleId
+                }),
+                success: function ({ data }) {
+                    clearUserTable();
+
+                    fillUserTable(data)
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                },
+                complete: function () {
+
+                    setTimeout(() => {
+                        $('#loading').css({
+                            'display': 'none'
+                        })
+                    }, 500)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            $(function () {
+                $('#user-roleId').selectize({
+                    delimiter: '|',
+                    hideSelected: true,
+                    placeholder: 'Chọn vai trò'
+                });
+            })
+
+            $('#loading').css({
+                "display": "block"
+            })
+
+            loadUserTable();
+
+            $('#btn-search-user').on('click', function () {
+
+                let id = $('#user-id').val();
+                let email = $('#user-email').val();
+                let phone = $('#user-phone').val();
+                let roleId = $('#user-roleId').val();
+
+                $('#loadig').css({
+                    'display': 'block'
+                })
+
+                loadUserTable(id, email, phone, roleId);
+            })
+        })
+    </script>
 }
-
-</table>

@@ -4,9 +4,8 @@ using BTL.Models.Interfaces;
 
 namespace BTL.Models
 {
-    public class Category : ISoftDeletedEntity , IDateCreatedEntity, IDateUpdatedEntity
+    public class Category : BaseEntity, ISoftDeletedEntity , IDateCreatedEntity, IDateUpdatedEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string ShortDescription { get; set; }
@@ -19,7 +18,8 @@ namespace BTL.Models
         public string MetaTitle { get; set; }
         public string MetaKeyword { get; set; }
         public string MetaDescription { get; set; }
-        public string PictureUrl { get; set; }
+        public int? PictureId { get; set; }
+        public Picture  Picture { get; set; }
         public DateTime CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
         public IList<Category> SubCategories { get; set; } = new List<Category>();

@@ -1,0 +1,435 @@
+﻿@model BTL.Areas.Admin.ViewModel.ProductSearchModel
+@{
+    ViewBag.Title = "Sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bolder">Sản phẩm</h2>
+            <div class="d-inline-block">
+                <a class="btn btn-primary" href='@Url.Action("Create", "Product")'>
+                    <span>Thêm mới</span>
+                </a>
+                <button id="btn-delete-product" class="btn btn-danger">
+                    <span>Xóa sản phẩm</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-2"> 
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="px-3 py-1">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fs-4 fw-light fa fa-search" aria-hidden="true"></i>
+                                        <p class="pt-2 px-4 fs-4">Tìm kiếm</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-8"></div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <!--Id-->
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Mã sản phẩm</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(p => p.Id, new { @id = "product-id", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập mã hàng" })
+                                            </div>
+                                        </div>
+                                        <!--Name-->
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Tên sản phẩm</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(p => p.Name, new { @id = "product-name", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập tên sản phẩm" })
+                                            </div>
+                                        </div>
+                                        <!--Category-->
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Danh mục</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="w-100">
+                                                    @Html.DropDownListFor(p => p.CategoryId, ViewBag.AvaliableCategories as List<SelectListItem>, new { @id = "product-categoryId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--IsShowOnHomePage-->
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Hiển thị trang chủ</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="col-md-4">
+                                                    @Html.CheckBoxFor(p => p.IsShowOnHomePage, new { @id = "product-isShowOnHomePage", @class = "form-check-input", @type = "checkbox" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <!--Manufacturer-->
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Nhà sản xuất</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(p => p.ManufacturerId, ViewBag.AvaliableManufacturers as List<SelectListItem>, new { @id = "product-manufacturerId", @class = "form-select form-select-sm" })
+                                            </div>
+                                        </div>
+                                        <!--Status-->
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Trạng thái</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(p => p.Status, ViewBag.ProductStatuses as List<SelectListItem>, new { @id = "product-status", @class = "form-select form-select-sm" })
+                                            </div>
+                                        </div>
+                                        <!--Gtin-->
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Gtin</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(p => p.Gtin, new { @id = "product-gtin", @type = "text", @class = "form-control form-control-sm" })
+                                            </div>
+                                        </div>
+                                        <!--Sku-->
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Sku</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(p => p.Sku, new { @id = "product-sku", @type = "text", @class = "form-control form-control-sm" })
+                                                    <button id="btn-search-product-sku" class="btn btn-primary">
+                                                        Tìm kiếm sku
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="row">
+                                    <div class="text-center col-md-12">
+                                        <button id="btn-search-product" class="btn btn-outline-info">
+                                            <div class="text-center">
+                                                <i class="fas fa-search pr-2"></i>
+                                                <span>Tìm kiếm</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="py-2 px-3">
+                            <table id="table-product" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr class="text-center border d-table-row">
+                                        <th scope="col">
+                                            <input id="checkboxs" class="form-check-input" type="checkbox" value="">
+                                        </th>
+                                        <th scope="col">Mã</th>
+                                        <th scope="col">Ảnh</th>
+                                        <th scope="col">Tên</th>
+                                        <th scope="col">SKU</th>
+                                        <th scope="col">Giá</th>
+                                        <th scope="col">Số lượng</th>
+                                        <th scope="col">Tình trạng</th>
+                                        <th scope="col">Sửa</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="display: table-row-group; vertical-align: middle" id="table-product-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+
+        function clearProductTable() {
+
+            $('#table-product-body').empty()
+        }
+
+        function fillProductTable(data) {
+            console.log(data);
+            let table = '';
+            if (data.length > 0) {
+                for (let i = 0; i < data.length; i++) {
+                    table += '<tr class="text-center d-table-row">';
+
+                    table += '<th class="text-center" scope="row">';
+                    table += '<input class="checkbox form-check-input" type="checkbox" value=""';
+                    table += 'data-id=' + data[i].Id + '>';
+                    table += '</th>';
+
+                    table += '<th>' + data[i].Id + '</th>';
+
+                    table += '<th>';
+                    table += '<img style="width:100px; height: 100px;" class="img-thumbnail"';
+
+                    let pictureUrl = data[i].PictureUrl;
+
+                    console.log(pictureUrl);
+
+                    table += 'src=' + pictureUrl;
+                    table += '>';
+                    table += '</th>';
+
+                    table += '<th>' + data[i].Name + '</th>';
+
+                    let sku = data[i].Sku;
+
+                    if (sku == null) sku = "";
+                    table += '<th>' + sku + '</th>';
+                    table += '<th>' + data[i].Price + '</th>';
+                    table += '<th>' + data[i].StockQuantity + '</th>';
+
+                    let icon = data[i].IsPublished == true ? '<i class="text-success fa fa-check" aria-hidden="true"></i>' : '<i class="text-success  fa fa-times" aria-hidden="true"></i>';
+                    table += '<th>' + icon + '</th>';
+
+                    let editUrl = '/Admin/Product/Edit/' + data[i].Id;
+                    table += '<th>' + '<a class="btn btn-primary"';
+                    table += 'href=' + editUrl + '>';
+                    table += '<span>Sửa</span>';
+                    table += '</a>';
+                    table += '</th>';
+
+                    table += '</tr>';
+                }
+
+            }
+            else {
+                table += '<tr>';
+                table += '<th colspan="9" class="text-center">';
+                table += '<p class="text-danger">Không có dữ liệu</p>';
+                table += '</th>';
+                table += '</tr>';
+            }
+
+            $('#table-product-body').append(table);
+        }
+
+        function loadProductTable(
+            id = 0,
+            name = '',
+            categoryId = 0,
+            manufacturerId = 0,
+            isShowOnHomePage = true,
+            sku = '',
+            gtin = '',
+            status = 0
+        ) {
+
+            $.ajax({
+                url: '/Admin/Product',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    Id: id,
+                    Name: name,
+                    CategoryId: categoryId,
+                    ManufacturerId: manufacturerId,
+                    IsShowOnHomePage: isShowOnHomePage,
+                    Sku: sku,
+                    Gtin: gtin,
+                    Status: status
+                }),
+                success: function ({ data }) {
+                    clearProductTable();
+
+                    fillProductTable(data);
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                },
+                complete: function () {
+
+                    setTimeout(() => {
+                        $('#loading').css({
+                            'display': 'none'
+                        })
+                    }, 500)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            $('#loading').css({
+                'display': 'block'
+            })
+
+            loadProductTable();
+
+            $('#checkboxs').on('click', function () {
+                const checkboxes = $('.checkbox');
+
+                let isChecked = $('#checkboxs').is(':checked');
+
+                console.log(isChecked);
+
+                for (let i = 0; i < checkboxes.length; i++) {
+                    checkboxes[i].checked = isChecked ? true : false;
+                }
+            })
+
+            $('#btn-search-product').on('click', function () {
+                let id = $('#product-id').val();
+                let name = $('#product-name').val();
+                let categoryIds = $('#product-categoryId').val();
+                let manufacturerId = $('#product-manufacturerId').val();
+
+                let isShowOnHomePage = false;
+
+                if ($('#product-isShowOnHomePage').is(":checked")) {
+                    isShowOnHomePage = true;
+                }
+
+                let sku = $('#product-sku').val();
+                let gtin = $('#product-gtin').val();
+                let status = $('#product-status').val();
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                loadProductTable(id, name, categoryIds, manufacturerId, isShowOnHomePage, sku, gtin, status);
+            })
+
+            $('#btn-delete-product').on('click', function () {
+
+                const checkboxes = $('.checkbox');
+                let ids = [];
+
+                for (let i = 0; i < checkboxes.length; i++) {
+                    let checkbox = checkboxes[i];
+                    if (checkbox.checked) {
+                        let id = checkbox.dataset.id;
+                        ids.push(id);
+                    }
+                }
+
+                if (ids.length == 0) {
+                    alert('Chọn sản phẩm cần xóa');
+                    return;
+                }
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                if (ids.length == 1) {
+                    $.ajax({
+                        url: '/Admin/Product/Delete/' + ids[0],
+                        method: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        success: function () {
+
+                            alert('Xóa sản phẩm thành công');
+
+                            //refresh table
+                            loadProductTable();
+
+                        },
+                        error: function (err) {
+                            console.log(err.responseText);
+                        },
+                        complete: function () {
+                            $('#loading').css({
+                                'display': 'none'
+                            })
+                        }
+                    })
+                }
+                else {
+                    $.ajax({
+                        url: '/Admin/Product/DeleteSelected',
+                        method: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(ids),
+                        success: function ({ success, msg }) {
+
+                            if (success) {
+
+                                alert('Xóa sản phẩm thành công');
+
+                                //refresh table
+                                loadProductTable();
+                            }
+                            else {
+                                alert(msg);
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err.responseText);
+                        },
+                        complete: function () {
+                            $('#loading').css({
+                                'display': 'none'
+                            })
+                        }
+                    })
+                }
+            })
+
+            $('#btn-search-product-sku').on('click', function () {
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                let sku = $('#product-sku').val();
+
+                if (sku.length == 0) {
+                    alert('Nhập mã sku để tìm kiếm');
+                    return false;
+                }
+
+                $.ajax({
+                    url: '/Admin/Product/GoToSku?sku=' + sku,
+                    method: 'POST',
+                    dataType: 'json',
+                    success: function ({ data }) {
+
+                        fillProductTable(data);
+                    },
+                    error: function (err) {
+                        alert(err.statusText);
+                    },
+                    complete: function () {
+
+                        $('#loading').css({
+                            'display': 'none'
+                        })
+                    }
+                })
+            })
+        })
+    </script>    
+}

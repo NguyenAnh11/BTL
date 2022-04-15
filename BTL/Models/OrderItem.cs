@@ -1,6 +1,6 @@
 ﻿namespace BTL.Models
 {
-    public class OrderItem
+    public class OrderItem : BaseEntity
     {
         public int OrderId { get; set; }
         public int ProductId { get; set; }

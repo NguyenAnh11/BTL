@@ -8,15 +8,18 @@
     <meta name="author" content="" />
     <title>@Page.Title</title>
     @RenderSection("head", required: false)
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
     <link href="~/Content/Site.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" integrity="sha512-xX2rYBFJSj86W54Fyv1de80DWBq7zYLn2z0I9bIhQG+rxIF6XVJUpdGnsNHWRa6AvP89vtFupEPDP8eZAtu9qA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/css/selectize.css" integrity="sha512-85w5tjZHguXpvARsBrIg9NWdNy5UBK16rAL8VWgnWXK2vMtcRKCBsHWSUbmMu0qHfXW2FVUDiWr6crA+IFdd1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" integrity="sha512-6PM0qYu5KExuNcKt5bURAoT6KCThUmHRewN3zUFNaoI6Di7XJPTMoT6K0nsagZKk2OB4L7E3q1uQKHNHd4stIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" integrity="sha512-xX2rYBFJSj86W54Fyv1de80DWBq7zYLn2z0I9bIhQG+rxIF6XVJUpdGnsNHWRa6AvP89vtFupEPDP8eZAtu9qA==" crossorigin="anonymous" referrerpolicy="no-referrer" />*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 </head>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" href="index.html">Admin</a>
+        <a class="navbar-brand fs-3 ps-3" href="index.html">Admin</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
         <!-- Navbar Search-->
@@ -34,7 +37,10 @@
                     <li><a class="dropdown-item" href="#!">Account</a></li>
                     <li><hr class="dropdown-divider" /></li>
                     <li>
-                        @Html.ActionLink("Logout", "Logout", "Account", new { Area = string.Empty }, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Đăng xuất", "Logout", "Account", new { Area = string.Empty }, new { @class = "dropdown-item" })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Trang chủ", "Index", "Home", new { Area = "" }, new { @class = "dropdown-item" })
                     </li>
                 </ul>
             </li>
@@ -52,13 +58,39 @@
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <!-- Sidenav Menu-->
                 <div class="sb-sidenav-menu">
                     <div class="nav">
+                        <a class="nav-link mt-2" href='@Url.Action("Index", "Home", new { Area = string.Empty })'>
+                            <div class="sb-nav-link-icon">
+                                <i class="fa fa-dot-circle" aria-hidden="true"></i>
+                            </div>
+                            Trang chủ
+                        </a>
+                        <a class="nav-link mt-2" href='@Url.Action("Index", "Product")'>
+                            <div class="sb-nav-link-icon">
+                                <i class="fa fa-dot-circle" aria-hidden="true"></i>
+                            </div>
+                            Sản phẩm
+                        </a>
+                        <a class="nav-link mt-2" href='@Url.Action("Index", "Category")'>
+                            <div class="sb-nav-link-icon">
+                                <i class="fa fa-dot-circle" aria-hidden="true"></i>
+                            </div>
+                            Danh mục
+                        </a>
+                        <a class="nav-link mt-2" href='@Url.Action("Index", "Manufacturer")'>
+                            <div class="sb-nav-link-icon">
+                                <i class="fa fa-dot-circle" aria-hidden="true"></i>
+                            </div>
+                            Hãng sản xuất
+                        </a>
+                        <a class="nav-link mt-2" href='@Url.Action("Logout", "Account", new { Area = string.Empty })'>
+                            <div class="sb-nav-link-icon">
+                                <i class="fa fa-dot-circle" aria-hidden="true"></i>
+                            </div>
+                            Đăng xuất
+                        </a>
                     </div>
-                </div>
-                <!-- Sidenav Footer-->
-                <div class="sb-sidenav-footer">
                 </div>
             </nav>
         </div>
@@ -70,8 +102,80 @@
         </div>
     </div>
     <script src="~/Scripts/jquery-3.4.1.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="~/Scripts/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/js/standalone/selectize.js" integrity="sha512-pF+DNRwavWMukUv/LyzDyDMn8U2uvqYQdJN0Zvilr6DDo/56xPDZdDoyPDYZRSL4aOKO/FGKXTpzDyQJ8je8Qw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/js/selectize.min.js" integrity="sha512-JiDSvppkBtWM1f9nPRajthdgTCZV3wtyngKUqVHlAs0d5q72n5zpM3QMOLmuNws2vkYmmLn4r1KfnPzgC/73Mw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
     @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#btn-upload").on('click', function () {
+                $('#picture').click();
+            })
+
+            $('#picture').change(function (e) {
+                $("#upload-error").text("");
+                if (e.target.files.length <= 0) return;
+
+                $('#btn-upload-remove').removeAttr("disabled");
+                $('#btn-upload').attr("disabled", true);
+
+                var file = e.target.files[0];
+
+                var form = new FormData();
+                form.append("file", file);
+
+                $.ajax({
+                    url: '/Admin/Image/Upload',
+                    method: 'POST',
+                    contentType: false,
+                    processData: false,
+                    data: form,
+                    success: function (response) {
+                        const { success, msg, id, pictureUrl } = response;
+
+                        if (!success) {
+                            $('#upload-error').text(msg);
+                        }
+                        else {
+                            $('#picture-id').text(id)
+                            $('#img').attr('src', pictureUrl);
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                    complete: function () {
+                        $('#btn-upload').removeAttr("disabled");
+                    }
+                })
+            })
+
+            $('#btn-upload-remove').on('click', function (e) {
+                const id = $('#picture-id').val();
+
+                $.ajax({
+                    url: '/Admin/Image/Remove?pictureId' + id,
+                    method: 'POST',
+                    success: function ({ pictureUrl }) {
+
+                        console.log(pictureUrl);
+
+                        $('#picture-id').text(0);
+
+                        $('#img').attr('src', pictureUrl);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                    complete: function () {
+                        $('#btn-upload-remove').attr('disabled', true);
+                    }
+                })
+            })
+        })
+    </script>
 </body>
 </html>

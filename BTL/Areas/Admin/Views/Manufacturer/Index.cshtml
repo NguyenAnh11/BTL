@@ -1,0 +1,305 @@
+﻿@model BTL.Areas.Admin.ViewModel.ManufacturerSearchModel
+@{
+    ViewBag.Title = "Hãng sản xuất";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bolder">Hãng sản xuất</h2>
+            <div class="d-inline-block">
+                <a class="btn btn-primary" href='@Url.Action("Create", "Manufacturer")'>
+                    <span>Thêm mới</span>
+                </a>
+                <button id="btn-delete-manufacturer" class="btn btn-danger">
+                    <span>Xóa hãng</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-2">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="px-3 py-1">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fs-4 fw-light fa fa-search" aria-hidden="true"></i>
+                                        <p class="pt-2 px-4 fs-4">Tìm kiếm</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-8"></div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Mã hãng</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(p => p.Id, new { @id = "manufacturer-id", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập mã hãng sản xuất" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Tên hãng</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(p => p.Name, new { @id = "manufacturer-name", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập tên hãng sản xuất" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Trạng thái</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(p => p.Status, ViewBag.CategoryStatuses as List<SelectListItem>, new { @id = "manufacturer-status", @class = "form-select form-select-sm", })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="form-group row">
+                                            <div class="text-center col-12">
+                                                <button type="button" id="btn-search-manufacturer" class="btn btn-outline-info">
+                                                    <i class="fas fa-search pr-2"></i>
+                                                    Tìm kiếm
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <table id="table-manufacturer" class="table table-bordered table-striped">
+                            <thead>
+                                <tr class="text-center border d-table-row">
+                                    <th scope="col">
+                                        <input id="checkboxs" class="form-check-input" type="checkbox" value="">
+                                    </th>
+                                    <th scope="col">Mã</th>
+                                    <th scope="col">Ảnh</th>
+                                    <th scope="col">Tên</th>
+                                    <th scope="col">Trạng thái</th>
+                                    <th scope="col">Thứ tự</th>
+                                    <th scope="col">Sửa</th>
+                                </tr>
+                            </thead>
+                            <tbody style="display: table-row-group; vertical-align: middle" id="table-manufacturer-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+
+        function clearManufacturerTable() {
+            $('#table-manufacturer-body').empty();
+        }
+
+        function fillManufacturerTable(data) {
+            let table = '';
+
+            if (data.length > 0) {
+                for (let i = 0; i < data.length; i++) {
+                    table += '<tr class="text-center d-table-row">';
+
+                    table += '<th class="text-center" scope="row">';
+                    table += '<input class="checkbox form-check-input" type="checkbox" value=""';
+                    table += 'data-id=' + data[i].Id + '>';
+                    table += '</th>';
+
+                    table += '<th>' + data[i].Id + '</th>';
+
+                    table += '<th>';
+                    table += '<img style="width:100px; height:100px;" class="img-thumbnail"';
+                    table += 'src=' + data[i].PictureUrl + '>';
+                    table += '</th>';
+
+                    table += '<th>' + data[i].Name + '</th>';
+
+                    let icon = data[i].IsPublished == true ? '<i class="text-success fa fa-check" aria-hidden="true"></i>' : '<i class="text-success fa fa-times" aria-hidden="true"></i>';
+
+                    table += '<th>' + icon + '</th>';
+
+                    table += '<th>' + data[i].DisplayOrder + '</th>';
+
+                    let editUrl = '/Admin/Manufacturer/Edit/' + data[i].Id;
+
+                    table += '<th>';
+                    table += '<a class="btn btn-secondary btn-sm"';
+                    table += 'href=' + editUrl + '>';
+                    table += '<span>Sửa<span>';
+                    table += '</a>';
+                    table += '</th>';
+
+                    table += '</tr>';
+                }
+            }
+            else {
+                table += '<tr>';
+                table += '<th colspan="7" class="text-center">';
+                table += '<p class="text-danger">Không có dữ liệu</p>';
+                table += '</th>';
+                table += '</tr>';
+            }
+
+            $('#table-manufacturer-body').append(table)
+        }
+
+        function loadManufacturerTable(id = 0, name = '', status = 0) {
+            $.ajax({
+                url: '/Admin/Manufacturer',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    'Id': id,
+                    'Name': name,
+                    'Status': status,
+                }),
+                success: function ({ data }) {
+                    clearManufacturerTable();
+
+                    fillManufacturerTable(data);
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                complete: function () {
+
+                    setTimeout(() => {
+                        $('#loading').css({
+                            'display': 'none'
+                        })
+                    }, 500)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            $('#loading').css({
+                "display": "block"
+            })
+
+            loadManufacturerTable();
+
+            $('#btn-search-manufacturer').on('click', function (e) {
+                let id = $('#manufacturer-id').val();
+                let name = $('#manufacturer-name').val();
+                let status = $('#manufacturer-status').val();
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                loadManufacturerTable(id, name, status);
+            })
+
+            $('#checkboxs').on('click', function () {
+                const checkboxes = $('.checkbox');
+
+                let isChecked = $('#checkboxs').is(':checked');
+
+                console.log(isChecked);
+
+                for (let i = 0; i < checkboxes.length; i++) {
+                    checkboxes[i].checked = isChecked ? true : false;
+                }
+            })
+
+            $('#btn-delete-manufacturer').on('click', function (e) {
+
+                //showloading
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                const checkboxes = $('.checkbox');
+                let ids = [];
+
+                for (let i = 0; i < checkboxes.length; i++) {
+                    let checkbox = checkboxes[i];
+                    if (checkbox.checked) {
+                        let id = checkbox.dataset.id;
+                        ids.push(id);
+                    }
+                }
+
+                if (ids.length == 0) {
+                    alert('Chọn hãng cần xóa');
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (ids.length == 1) {
+                    $.ajax({
+                        url: '/Admin/Manufacturer/Delete/' + ids[0],
+                        method: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        success: function ({ success, msg }) {
+                            if (success) {
+                                alert("Xóa hãng sản xuất thành công");
+
+                                //refresh table
+                                loadManufacturerTable();
+                            }
+                            else {
+                                alert(msg)
+                            }
+
+                        },
+                        error: function (error) {
+                            console.log(error.responseText);
+                        },
+                        complete: function () {
+                            $('#loading').css({
+                                'display': 'none'
+                            })
+                        }
+                    })
+                }
+                else {
+                    $.ajax({
+                        url: '/Admin/Manufacturer/DeleteSelected',
+                        method: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(ids),
+                        success: function () {
+                            alert("Xóa hãng sản xuất thành công");
+
+                            //refresh table
+                            loadManufacturerTable();
+
+                        },
+                        error: function (error) {
+                            console.log(error.responseText);
+                        },
+                        complete: function () {
+                            $('#loading').css({
+                                'display': 'none'
+                            })
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+}

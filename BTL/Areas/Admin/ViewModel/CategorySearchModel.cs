@@ -1,12 +1,9 @@
-﻿using System.Web.Mvc;
-
-namespace BTL.Areas.Admin.ViewModel
+﻿namespace BTL.Areas.Admin.ViewModel
 {
     public class CategorySearchModel
     {
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }    
-        public int CategoryPublishdStatusId { get; set; }
-        public SelectList CategoryPublishStatus { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }    
+        public int Status { get; set; }
     }
 }

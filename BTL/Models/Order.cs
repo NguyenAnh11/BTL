@@ -1,12 +1,11 @@
-﻿using System;
+﻿using BTL.Models.Interfaces;
+using System;
 using System.Collections.Generic;
-using BTL.Models.Interfaces;
 
 namespace BTL.Models
 {
-    public class Order : IDateCreatedEntity
+    public class Order : BaseEntity, IDateCreatedEntity
     {
-        public int Id { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
         public DateTime CreateAt { get; set; }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Web.Mvc;
-
-namespace BTL.Areas.Admin.ViewModel
+﻿namespace BTL.Areas.Admin.ViewModel
 {
     public class CategoryModel
     {
@@ -18,9 +15,9 @@ namespace BTL.Areas.Admin.ViewModel
         public string MetaTitle { get; set; }
         public string MetaKeyword { get; set; }
         public string MetaDescription { get; set; }
+        public int PictureId { get; set; }
         public string PictureUrl { get; set; }
-        public DateTime CreateAt { get; set; }
-        public DateTime? UpdateAt { get; set; }
-        public SelectList AvaliableCategories { get; set; }
+        public string CreateAt { get; set; }
+        public string UpdateAt { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace BTL.Models
 {
-    public class CategoryProduct
+    public class CategoryProduct : BaseEntity
     {
         public int CategoryId { get; set; }
         public Category Category { get; set; }

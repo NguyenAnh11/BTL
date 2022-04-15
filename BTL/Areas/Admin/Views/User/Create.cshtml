@@ -1,90 +1,235 @@
-﻿@model BTL.Areas.Admin.ViewModel.UserCreateUpdateModel
-
+﻿@model BTL.Areas.Admin.ViewModel.UserModel
 @{
-    ViewBag.Title = "Tạo mới người dùng";
+    ViewBag.Title = "Thêm mới người dùng";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-
-@using (Html.BeginForm("Create", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
-
-<div class="form-horizontal">
-    <h4>Tạo mới</h4>
-    <hr />
-    <p class="text-danger">@ViewBag.Error</p>
-    @Html.HiddenFor(model => model.Id)
-    <div class="form-group">
-        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(p => p.Gender, new { @class = "control-label mb-2 text-muted col-md-2" })
-        <br />
-        <div class="col-md-10 d-flex justify-content-between align-items-center">
-            <div>
-                @Html.RadioButtonFor(p => p.Gender, 1)
-                <span class="text-muted">Nam</span>
+<div>
+    <div class="py-1 px-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h2 class="fw-bolder">Thêm mới người dùng</h2>
+                <small class="ml-3 d-flex align-items-center">
+                    <i class="px-2 text-primary fa fa-chevron-circle-left" aria-hidden="true"></i>
+                    <a class="text-primary text-decoration-none fs-5" href='@Url.Action("Index", "User")'>
+                        Quay về trang chủ
+                    </a>
+                </small>
             </div>
-            <div>
-                @Html.RadioButtonFor(p => p.Gender, 2)
-                <span class="text-muted">Nữ</span>
+            <div class="d-inline-block">
+                <button id="btn-save-user" class="btn btn-primary">
+                    Lưu
+                </button>
             </div>
         </div>
     </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.RoleId, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10 mt-2">
-            @Html.DropDownListFor(model => model.RoleId, ViewBag.Roles as SelectList, new { @class = "form-select" })
-            @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Image, new { @class = "form-label col-md-2" })
-        <div class="col-md-10 mt-2">
-            <input type="file" name="Image">
-        </div>
-    </div>
-
-    <div class="form-group mt-4">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Thêm" class="btn btn-outline-info" />
+    <p id="create-user-error" class="text-danger"></p>
+    <div class="container-fluid mt-3">
+        <div class="form-horizontal">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-info" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Thông tin người dùng</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Họ đệm</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(p => p.FirstName, new { @id = "user-firstName", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập họ đệm" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Tên</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(p => p.LastName, new { @id = "user-lastName", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập tên" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Email</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(p => p.Email, new { @id = "user-email", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập email" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Số điện thoại</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(p => p.Phone, new { @id = "user-phone", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập số điện thoại" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Giới tính</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(p => p.Gender, 0, new { @id="user-gender", @name = "gender", @value = 0, @class = "form-check-input" })
+                                    <label class="form-check-label">
+                                        Nam
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(p => p.Gender, 1, new { @id = "user-gender", @name = "gender", @value = 1, @class = "form-check-input" })
+                                    <label class="form-check-label">
+                                        Nữ
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Vai trò</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownListFor(p => p.RoleId, ViewBag.AvaliableRoles as List<SelectListItem>, new { @id = "user-roleId", @multiple = "multiple" })
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            @Html.Partial("_Upload", null, new ViewDataDictionary { { "PictureId", Model.PictureId }, { "PictureUrl", Model.PictureUrl } })
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script type="text/javascript">
+
+
+        function validateUserForm() {
+            let firstName = $('#user-firstName').val();
+            if (firstName.length == 0) {
+                $('#create-user-error').text('Nhập họ đệm');
+                return false;
+            }
+
+            let lastName = $('#user-lastName').val();
+            if (lastName.length == 0) {
+                $('#create-user-error').text('Nhập tên');
+                return false;
+            }
+
+            let email = $('#user-email').val();
+            if (email.length == 0) {
+                $('#create-user-error').text('Nhập email');
+                return false;
+            }
+
+            let phone = $('#user-phone').val();
+            if (phone.length == 0 || phone.length < 10 || phone > 10) {
+                $('#create-user-error').text('Nhập số điện thoại có 10 chữ số');
+                return false;
+            }
+
+            return true;
+        }
+
+        function saveUser() {
+            let firstName = $('#user-firstName').val();
+            let lastName = $('#user-lastName').val();
+            let email = $('#user-email').val();
+            let phone = $('#user-phone').val();
+
+            let gender = $("input[name='Gender']:checked").val()
+
+            let roleId = $('#user-roleId').val();
+            let pictureId = $('#picture-id').val();
+
+            $.ajax({
+                url: '/Admin/User/Create',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    'FirstName': firstName,
+                    'LastName': lastName,
+                    'Email': email,
+                    'Phone': phone,
+                    'Gender': gender,
+                    'RoleId': roleId,
+                    'PictureId': pictureId
+                }),
+                success: function (response) {
+                    const { success, msg } = response;
+
+                    if (!success) {
+                        $('#create-user-error').text(msg)
+                    }
+                    else {
+                        alert('Thêm người dùng thành công');
+
+                        window.location.href = '/Admin/User'
+                    }
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                },
+                complete: function () {
+                    $('#loading').css({
+                        'display': 'none'
+                    })
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            $(function () {
+                $('#user-roleId').selectize({
+                    delimiter: '|',
+                    hideSelected: true,
+                    placeholder: 'Chọn vai trò'
+                });
+            })
+
+            $(document).on('click', 'div.selectize-input div.item', function () {
+                var select = $('#user-roleId').selectize();
+
+                var selectedValue = $(this).attr("data-value");
+
+                select[0].selectize.removeItem(selectedValue);
+                select[0].selectize.refreshItems();
+                select[0].selectize.refreshOptions();
+            });
+
+            $('#btn-save-user').on('click', function () {
+                if (!validateUserForm()) return;
+
+                console.log('clock');
+
+                $('#loading').css({
+                    'display': 'block',
+                })
+
+                saveUser();
+            })
+        })
+
+    </script>
 }
-
-<div class="mt-3">
-    @Html.ActionLink("Quay về trang chủ", "Index", "User", new { @class = "text-muted"})
-</div>

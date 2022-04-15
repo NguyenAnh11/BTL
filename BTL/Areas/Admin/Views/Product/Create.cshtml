@@ -1,0 +1,390 @@
+﻿@model BTL.Areas.Admin.ViewModel.ProductModel
+@{
+    ViewBag.Title = "Tạo mới sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var s = Model.CreateAt;
+}
+
+<div>
+    <div class="py-1 px-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h2 class="fw-bolder">Thêm mới sản phẩm</h2>
+                <small class="ml-3 d-flex align-items-center">
+                    <i class="px-2 text-primary fa fa-chevron-circle-left" aria-hidden="true"></i>
+                    <a class="text-primary text-decoration-none fs-5" href='@Url.Action("Index", "Product")'>
+                        Quay về trang chủ
+                    </a>
+                </small>
+            </div>
+            <div class="d-inline-block">
+                <button id="btn-save-product" class="btn btn-primary">
+                    Lưu
+                </button>
+                <button id="btn-saveAndEdit-product" class="btn btn-primary">
+                    Lưu và sửa
+                </button>
+            </div>
+        </div>
+    </div>
+    <p id="create-product-error" class="text-danger"></p>
+    <div class="container-fluid mt-3">
+        <div class="form-horizontal">
+            <!--Thông tin sản phẩm-->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-info" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Thông tin sản phẩm</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Tên sản phẩm</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(p => p.Name, new { @id = "product-name", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập tên sản phẩm" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Mô tả ngắn sản phẩm</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(p => p.ShortDescription, new { @id = "product-shortDescription", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập mô tả ngắn" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Mô tả sản phẩm</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(p => p.Description, new { @id = "product-description", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập mô tả" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">SKU</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(p => p.Sku, new { @id = "product-sku", @type = "text", @class = "form-control form-control-sm" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Gtin</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(p => p.Gtin, new { @id = "product-gtin", @type = "text", @class = "form-control form-control-sm" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Danh mục</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownListFor(p => p.CategoryId, ViewBag.AvaliableCategories as List<SelectListItem>, new { @id = "product-categoryIds", @multiple = "multiple" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Nhà sản xuất</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownListFor(p => p.ManufacturerId, ViewBag.AvaliableManufacturers as List<SelectListItem>, new { @id = "product-manufacturerId", @class = "form-select form-select-sm" })
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <div class="col-md-3">
+                                <div class="float-end">
+                                    <p class="fw-lighter">Số lượng</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(p => p.StockQuantity, new { @id = "product-stockQuantity", @class = "form-control", @placeholder = "Nhập số lượng sản phẩm" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Hiển thị sản phẩm-->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-television" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Hiển thị sản phẩm</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Trạng thái</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.CheckBoxFor(p => p.IsPublished, new { @id = "product-isPublished", @class = "form-check-input" })
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Hiển thị trang chủ</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.CheckBoxFor(p => p.IsShowOnHomePage, new { @id = "product-isShowOnHomePage", @class = "form-check-input" })
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Mới</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.CheckBoxFor(p => p.IsMarkAsNew, new { @id = "product-isMarkAsNew", @class = "form-check-input" })
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Thứ tự</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.DisplayOrder, new { @id = "product-displayOrder", @type = "number", @class = "form-control" })
+                        </div>
+                    </div>
+                </div>      
+            </div>
+            <!--Giá-->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-money" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Giá cả</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Giá</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.Price, new { @id = "product-price", @class = "form-control", @placeholder = "Nhập giá sản phẩm" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Ảnh-->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-picture-o" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Ảnh</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-danger">Bạn phải lưu sản phẩm trước khi cập nhật ảnh cho sản phẩm</p>
+                </div>
+            </div>
+            <!--Seo-->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-globe" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Seo</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">MetaTitle</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.MetaTitle, new { @id = "product-metaTitle", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group row my-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">MetaKeyword</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.MetaKeyword, new { @id = "product-metaKeyword", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Meta Description</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.MetaDescription, new { @id = "product-metaDescription", @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+
+        function validateProductForm() {
+            let name = $('#product-name').val();
+
+            if (name.length == 0) {
+                $('#create-product-error').text("Nhập tên sản phẩm");
+
+                return false;
+            }
+
+            return true;
+        }
+
+        function saveProduct(continueEdit = false) {
+
+            let name = $('#product-name').val();
+            let shortDescription = $('#product-shortDescription').val();
+            let description = $('#product-description').val();
+            let sku = $('#product-sku').val();
+            let gtin = $('#product-gtin').val();
+            let manufacutererId = $('#product-manufacturerId').val();
+            let stockQuantity = $('#product-stockQuantity').val();
+            let categoryIds = $('#product-categoryIds').val();
+
+            let isPublished = $('#product-isPublished').is(':checked') ? true : false;
+            let isShowOnHomePage = $('#product-isShowOnHomePage').is(':checked') ? true : false;
+            let isMarkAsNew = $('#product-isMarkAsNew').is(':checked') ? true : false;
+            let displayOrder = $('#product-displayOrder').val();
+
+            let price = $('#product-price').val();
+
+            let metaTitle = $('#product-metaTitle').val();
+            let metaKeyword = $('#product-metaKeyword').val();
+            let metaDescription = $('#product-metaDescription').val();
+
+            $.ajax({
+                url: '/Admin/Product/Create',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    Name: name,
+                    Description: description,
+                    ShortDescription: shortDescription,
+                    Sku: sku,
+                    Gtin: gtin,
+                    Price: price,
+                    DisplayOrder: displayOrder,
+                    StockQuantity: stockQuantity,
+                    IsPublished: isPublished,
+                    IsShowOnHomePage: isShowOnHomePage,
+                    IsMarkAsNew: isMarkAsNew,
+                    ManufacturerId: manufacutererId,
+                    CategoryId: categoryIds,
+                    MetaTitle: metaTitle,
+                    MetaKeyword: metaKeyword,
+                    MetaDescription: metaDescription
+                }),
+                success: function (response) {
+                    const { id } = response;
+
+                    $('#loading').css({
+                        "display": "none"
+                    })
+
+                    alert("Thêm sản phẩm thành công");
+
+                    const returnUrl = continueEdit ? '/Admin/Product/Edit' + id : '/Admin/Product';
+
+                    window.location.href = returnUrl;
+                },
+                error: function (err) {
+                    console.log(err.responseText)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            $(function () {
+                $('#product-categoryIds').selectize({
+                    delimiter: '|',
+                    hideSelected: true,
+                    placeholder: 'Chọn danh mục'
+                });
+            })
+
+            $(document).on('click', 'div.selectize-input div.item', function (e) {
+                var select = $('#product-categoryIds').selectize();
+
+                var selectedValue = $(this).attr("data-value");
+
+                select[0].selectize.removeItem(selectedValue);
+                select[0].selectize.refreshItems();
+                select[0].selectize.refreshOptions();
+            });
+
+            $('#btn-save-product').on('click', function () {
+                if (!validateProductForm()) return;
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                saveProduct(false)
+            })
+
+            $('#btn-saveAndEdit-product').on('click', function () {
+                
+                if (!validateProductForm()) return;
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                saveProduct(true)
+            })
+        })
+    </script>    
+}

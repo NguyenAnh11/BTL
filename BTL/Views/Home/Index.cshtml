@@ -1,31 +1,93 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model BTL.ViewModels.HomeModel
+@{
+    ViewBag.Title = "Trang chủ";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<section class="padding-bottom-sm">
+    <header class="section-heading heading-line">
+        <h4 class="title-section text-uppercase">Danh mục</h4>
+    </header>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <div class="row row-sm">
+        @foreach (var category in Model.Categories)
+        {
+            <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                <div class="card card-sm card-product-grid text-center">
+                    <a href="" class="img-wrap">
+                        <img src="@category.Picture.Url" alt="@category.Picture.Alt" title="@category.Picture.Title"/>
+                    </a>
+                    <figcaption class="info-wrap">
+                        <p class="title text-center">@category.Name</p>
+                    </figcaption>
+                </div>
+            </div>
+        }
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+</section>
+
+<section class="padding-bottom-sm">
+    <header class="section-heading heading-line">
+        <h4 class="title-section text-uppercase">Sản phẩm</h4>
+    </header>
+
+    <div class="row row-sm">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                <div class="card card-sm card-product-grid text-center">
+                    <a class="img-wrap">
+                        <img src="@product.PictureUrl" />
+                    </a>
+                    <figcaption class="info-wrap">
+                        <p class="title">@product.Name</p>
+                        <div class="price mt-1">@product.Price</div>
+                    </figcaption>
+                    <div class="my-2 d-flex justify-content-center">
+                        <button data-id="@product.Id" class="btn btn-add-cart btn-primary">
+                            <i class="pr-2 fa fa-shopping-cart" aria-hidden="true"></i>
+                            <span>Thêm vào giỏ hàng</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $(document).on('click', '.btn-add-cart', function (e) {
+                const button = $(e.target).parent()[0];
+                let productId = $(button).data('id');
+                $.ajax({
+                    url: '/Cart/AddToCart',
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        'productId': productId,
+                        'quantity': 1
+                    }),
+                    success: function (data) {
+                        const { success, msg, number } = data;
+
+                        if (!success) {
+                            alert(msg);
+                        }
+                        else {
+                            alert('Thêm vào giỏ hàng thành công')
+                            
+                           $('#cart').text(number);
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err.responseText)
+                    }
+                })
+            })
+        })
+    </script>
+}
+

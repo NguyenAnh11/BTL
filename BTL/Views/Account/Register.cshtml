@@ -1,4 +1,4 @@
-﻿@model BTL.ViewModels.Account.RegisterViewModel
+﻿@model BTL.ViewModels.Account.RegisterModel
 @{
     Layout = null;
     ViewBag.Title = "Đăng ký";
@@ -10,91 +10,117 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+    <link href="~/Content/Site.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <script src="~/Scripts/jquery-3.4.1.js"></script>
 </head>
 <body>
-    <section class="h-100">
+    <section style="height: 100vh">
+        <div id="loading" class="overlay">
+            <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
         <div class="container h-100">
-            <div class="row justify-content-sm-center h-100">
+            <div class="d-flex align-items-center justify-content-sm-center h-100">
                 <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
                     <div class="card shadow-lg">
-                        <div class="card-body px-3 py-2">
-                            <h1 class="fs-2 card-title text-center text-uppercase fw-bold mb-3">@ViewBag.Title</h1>
-                            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @id = "form-register", @novalidate = "", @autocomplete = "off" }))
-                            {
-                                @Html.AntiForgeryToken()
-                                <div class="mb-2">
-                                    <div class="w-100">
-                                        @Html.LabelFor(p => p.FirstName, new { @class = "mb-2 text-muted" })
-                                        @Html.TextBoxFor(p => p.FirstName, new { @class = "form-control", @required = true, @autofoucs = true })
-                                        @Html.ValidationMessageFor(p => p.FirstName, "", new { @class = "text-danger" })
+                        <div class="card-body p-5">
+                            <h1 class="fs-2 card-title text-center text-uppercase fw-bold mb-5">@ViewBag.Title</h1>
+                            <div class="w-100 text-center">
+                                <p id="register-error" class="text-danger"></p>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Họ đệm</p>
                                     </div>
                                 </div>
-
-                                <div class="mb-2">
-                                    <div class="w-100">
-                                        @Html.LabelFor(p => p.LastName, new { @class = "mb-2 text-muted" })
-                                        @Html.TextBoxFor(p => p.LastName, new { @class = "form-control", @required = true })
-                                        @Html.ValidationMessageFor(p => p.LastName, "", new { @class = "text-danger" })
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(p => p.FirstName, new { @id = "register-firstName", @class = "form-control form-control-sm" })
+                                </div>
+                            </div>
+                            <div class="form-group row mt-2">
+                                <div class="col-md-4">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Tên</p>
                                     </div>
                                 </div>
-
-                                <div class="mb-2">
-                                    @Html.LabelFor(p => p.Gender, new { @class = "mb-2 text-muted" })
-                                    <br />
-                                    <div class="w-100 d-flex justify-content-between align-items-center">
-                                        <div>
-                                            @Html.RadioButtonFor(p => p.Gender, 1)
-                                            <span class="text-muted">Nam</span>
-                                        </div>
-                                        <div>
-                                            @Html.RadioButtonFor(p => p.Gender, 2)
-                                            <span class="text-muted">Nữ</span>
-                                        </div>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(p => p.LastName, new { @id = "register-lastName", @class = "form-control form-control-sm" })
+                                </div>
+                            </div>
+                            <div class="form-group row mt-2">
+                                <div class="col-md-4">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Giới tính</p>
                                     </div>
                                 </div>
-
-                                <div class="mb-2">
-                                    <div class="w-100">
-                                        @Html.LabelFor(p => p.PhoneNumber, new { @class = "mb-2 text-muted" })
-                                        @Html.TextBoxFor(p => p.PhoneNumber, new { @class = "form-control", @required = true })
-                                        @Html.ValidationMessageFor(p => p.PhoneNumber, "", new { @class = "text-danger" })
+                                <div class="col-md-8">
+                                    <div class="form-check">
+                                        @Html.RadioButtonFor(p => p.Gender, 0, new { @id = "register-gender", @name = "gender", @class = "form-check-input" })
+                                        <label class="form-check-label">
+                                            Nam
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        @Html.RadioButtonFor(p => p.Gender, 1, new { @id = "register-gender", @name = "gender",  @class = "form-check-input" })
+                                        <label class="form-check-label">
+                                            Nữ
+                                        </label>
                                     </div>
                                 </div>
-
-                                <div class="mb-2">
-                                    <div class="w-100">
-                                        @Html.LabelFor(p => p.Email, new { @class = "mb-2 text-muted" })
-                                        @Html.TextBoxFor(p => p.Email, new { @class = "form-control", @required = true })
-                                        @Html.ValidationMessageFor(p => p.Email, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row mt-2">
+                                <div class="col-md-4">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Email</p>
                                     </div>
                                 </div>
-
-                                <div class="mb-2">
-                                    <div class="w-100">
-                                        @Html.LabelFor(p => p.Password, new { @class = "mb-2 text-muted" })
-                                        @Html.TextBoxFor(p => p.Password, new { @class = "form-control", @required = true })
-                                        @Html.ValidationMessageFor(p => p.Password, "", new { @class = "text-danger" })
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(p => p.Email, new { @id = "register-email", @class = "form-control form-control-sm" })
+                                </div>
+                            </div>
+                            <div class="form-group row mt-2">
+                                <div class="col-md-4">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Số điện thoại</p>
                                     </div>
                                 </div>
-
-                                <div class="mb-2">
-                                    <div class="w-100">
-                                        @Html.LabelFor(p => p.ConfirmPassword, new { @class = "mb-2 text-muted" })
-                                        @Html.TextBoxFor(p => p.ConfirmPassword, new { @class = "form-control", @required = true })
-                                        @Html.ValidationMessageFor(p => p.ConfirmPassword, "", new { @class = "text-danger" })
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(p => p.PhoneNumber, new { @id = "register-phoneNumber", @class = "form-control form-control-sm" })
+                                </div>
+                            </div>
+                            <div class="form-group row mt-2">
+                                <div class="col-md-4">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Mật khẩu</p>
                                     </div>
                                 </div>
-                                
-                                <div class="w-100 d-flex justify-content-center align-items-center">
-                                    <button id="btn-register" type="submit" class="btn btn-primary ms-auto">
-                                        Đăng ký
-                                    </button>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(p => p.Password, new { @id = "register-password", @type = "password", @class = "form-control form-control-sm" })
                                 </div>
-                            }
+                            </div>
+                            <div class="form-group row mt-2">
+                                <div class="col-md-4">
+                                    <div class="float-end">
+                                        <p class="fw-lighter">Xác thực mật khẩu</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(p => p.ConfirmPassword, new { @id = "register-confirmPassword", @type = "password", @class = "form-control form-control-sm" })
+                                </div>
+                            </div>
+                            <div class="form-group row mt-3">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-8">
+                                    <button class="btn btn-primary" type="button" id="btn-register">Đăng ký</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-footer py-2 border-0">
+                        <div class="card-footer py-3 border-0">
                             <div class="text-center text-muted fw-lighter">
                                 @Html.ActionLink("Đăng nhập", "Login", "Account", new { @class = "text-reset text-decoration-none" })
                             </div>
@@ -104,6 +130,110 @@
             </div>
         </div>
     </section>
-    <script src="~/Assets/Client/Scripts/account.js"></script>
+    <script type="text/javascript">
+
+        function validateRegisterForm() {
+            let firstName = $('#register-firstName').val();
+            let lastName = $('#register-lastName').val();
+            let gender = $("input[name='Gender']:checked").val()
+            let email = $('#register-email').val();
+            let phone = $('#register-phoneNumber').val();
+            let password = $('#register-password').val();
+            let confirmPassword = $('#register-confirmPassword').val();
+
+            console.log(gender)
+
+            if (firstName.length == 0) {
+                $('#register-error').text('Nhập họ đệm')
+                return false;
+            }
+
+            if (lastName.length == 0) {
+                $('#register-error').text('Nhập tên')
+                return false;
+            }
+
+            if (gender != 0 && gender != 1) {
+                $('#register-error').text('Chọn giới tính')
+                return false;
+            }
+
+            if (email.length == 0) {
+                $('#register-error').text('Nhập email')
+                return false;
+            }
+
+            if (phone.length == 0) {
+                $('#register-error').text('Nhập số điện thoại')
+                return false;
+            }
+            if (!/^\d{10}$/.test(phone)) {
+                $('#register-error').text('Số điện thoại chỉ chứa 10 ký tự số')
+                return false;
+            }
+
+            if (password.length == 0 || !/^\d{6}$/.test(password)) {
+                $('#register-error').text('Mật khẩu chí chứa 6 ký tự số')
+                return false;
+            }
+
+            if (confirmPassword.length == 0 || !/^\d{6}$/.test(confirmPassword)) {
+                $('#register-error').text('Xác thực mật khẩu chí chứa 6 ký tự số')
+                return false;
+            }
+
+            return true;
+        }
+
+        $(document).ready(function () {
+            $('#btn-register').on('click', function () {
+
+                if (!validateRegisterForm()) {
+                    return;
+                }
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                let firstName = $('#register-firstName').val();
+                let lastName = $('#register-lastName').val();
+                let gender = $("input[name='Gender']:checked").val();
+                let email = $('#register-email').val();
+                let phone = $('#register-phoneNumber').val();
+                let password = $('#register-password').val();
+                let confirmPassword = $('#register-confirmPassword').val();
+
+                $.ajax({
+                    url: '/Account/Register',
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        'FirstName': firstName,
+                        'LastName': lastName,
+                        'Gender': gender,
+                        'Email': email,
+                        'PhoneNumber': phone,
+                        'Password': password,
+                        'ConfirmPassword': confirmPassword
+                    }),
+                    success: function ({ success, msg }) {
+                        if (!success) {
+                            alert(msg);
+                        }
+                        else {
+                            alert('Đăng ký thành công');
+
+                            window.location.href = '/Account/Login';
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err.responseText)
+                    }
+                })
+            })
+        });
+    </script>
 </body>
 </html>
