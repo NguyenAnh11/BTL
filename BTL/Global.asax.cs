@@ -2,6 +2,7 @@
 using System.Web.Optimization;
 using System.Web.Routing;
 using BTL.App_Start;
+using BTL.Filters;
 
 namespace BTL
 {
@@ -10,6 +11,7 @@ namespace BTL
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+            GlobalFilters.Filters.Add(new HandleExceptionAttribute());
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

@@ -1,31 +1,19 @@
-﻿using System.Net;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace BTL.Filters
 {
-    public class HandleExceptionAttribute : HandleErrorAttribute
+    public class HandleExceptionAttribute : FilterAttribute, IExceptionFilter
     {
-        public override void OnException(ExceptionContext filterContext)
+        public void OnException(ExceptionContext filterContext)
         {
-            if (filterContext.HttpContext.Request.IsAjaxRequest() && filterContext.Exception != null)
+            filterContext.ExceptionHandled = true;
+            filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary
             {
-                filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                filterContext.Result = new JsonResult
-                {
-                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                    Data = new
-                    {
-                        filterContext.Exception.Message,
-                        filterContext.Exception.StackTrace
-                    }
-                };
-
-                filterContext.ExceptionHandled = true;
-            }
-            else
-            {
-                base.OnException(filterContext);
-            }
+                { "controller", "Home" },
+                { "action", "Error" },
+                { "area", null }
+            });
         }
     }
 }

@@ -140,7 +140,7 @@
                     icon = data[i].IsSystemRole == true ? '<i class="text-success fa fa-check" aria-hidden="true"></i>' : '<i class="text-success  fa fa-times" aria-hidden="true"></i>';
                     table += '<th>' + icon + '</th>';
 
-                    let editUrl = '/Admin/Role/Edit/' + data[i].Id;
+                    let editUrl = '/Admin/Role/Edit/' + data[i];
                     table += '<th>' + '<a class="btn btn-primary"';
                     table += 'href=' + editUrl + '>';
                     table += '<span>Sửa</span>';

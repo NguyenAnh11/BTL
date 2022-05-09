@@ -87,5 +87,10 @@ namespace BTL.Controllers
 
             return View(homeModel);
         }
+
+        public ActionResult Error()
+        {
+            return View();
+        }
     }
 }
