@@ -184,6 +184,7 @@
     <Compile Include="Areas\Admin\ViewModel\UserSearchModel.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Filters\AdminAuthrorizeAttribute.cs" />
     <Compile Include="Filters\HandleExceptionAttribute.cs" />
@@ -233,11 +234,16 @@
     <Compile Include="Migrations\202204080236210_remove_user.designer.cs">
       <DependentUpon>202204080236210_remove_user.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205090734157_add_product_review_model.cs" />
+    <Compile Include="Migrations\202205090734157_add_product_review_model.designer.cs">
+      <DependentUpon>202205090734157_add_product_review_model.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\Picture.cs" />
     <Compile Include="Models\PictureType.cs" />
     <Compile Include="Models\ProductPicture.cs" />
+    <Compile Include="Models\ProductReview.cs" />
     <Compile Include="Models\UserRole.cs" />
     <Compile Include="Services\AbstractEntityService.cs" />
     <Compile Include="Services\AbstractSoftDeleteEntityService.cs" />
@@ -309,6 +315,7 @@
     <Content Include="Content\css\responsive.css" />
     <Content Include="Content\css\ui.css" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\xzoom.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -424,6 +431,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\script.js" />
+    <Content Include="Scripts\xzoom.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -441,6 +449,7 @@
     <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Cart\CartIcon.cshtml" />
     <Content Include="Views\Cart\CartMoney.cshtml" />
+    <Content Include="Views\Product\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -491,6 +500,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204080236210_remove_user.resx">
       <DependentUpon>202204080236210_remove_user.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205090734157_add_product_review_model.resx">
+      <DependentUpon>202205090734157_add_product_review_model.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

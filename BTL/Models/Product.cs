@@ -27,5 +27,6 @@ namespace BTL.Models
         public Manufacturer Manufacturer { get; set; }
         public IList<ProductPicture> ProductPictures { get; set; } = new List<ProductPicture>();    
         public IList<CategoryProduct> CategoryProducts { get; set; } = new List<CategoryProduct>();
+        public IList<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();   
     }
 }

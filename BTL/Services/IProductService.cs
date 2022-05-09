@@ -12,7 +12,7 @@ namespace BTL.Services
         Task<Product> GetProductByGtinAsync(string gtin, bool onlyPublished = true);
         Task<IList<Product>> GetProductsDisplayOnHomePageAsync(bool onlyPublished = true);
         Task<IList<ProductPicture>> GetProductPicturesByProductIdAsync(Product product);
-        Task<IList<Picture>> GetPicturesByProductIdAsync(Product product, int recordToReturn = 0);
+        Task<IList<Picture>> GetPicturesByProductIdAsync(Product product, int? recordToReturn = default);
         Task<IList<CategoryProduct>> GetCategoryProductsByCategoryIdAsync(int categortId, bool onlyPublished = true);
         Task<int> GetNumOfProductInCategoryAsync(int categoryId, bool onlyPublished = false);
         Task SaveCategoriesToProductAsync(Product product, int[] categoryIds);

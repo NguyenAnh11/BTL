@@ -70,7 +70,7 @@ namespace BTL.Controllers
             Session["Cart"] = cart;
             Session["Number"] = cart.Count;
 
-            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = true, number = cart.Count }, JsonRequestBehavior.AllowGet);
         }
         [HttpDelete]
         public async Task<ActionResult> RemoveFromCart(int productId)
@@ -136,7 +136,8 @@ namespace BTL.Controllers
         {
             var cart = Session["Cart"] as List <CartModel>;
 
-            ViewBag.Money = cart.Sum(p => p.Quantity * p.Price);
+            if(cart != null)
+                ViewBag.Money = cart.Sum(p => p.Quantity * p.Price);
 
             return PartialView();
         }

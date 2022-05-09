@@ -77,7 +77,7 @@ namespace BTL.Services
             return products;
         }
 
-        public async Task<IList<Picture>> GetPicturesByProductIdAsync(Product product, int recordToReturn = 0)
+        public async Task<IList<Picture>> GetPicturesByProductIdAsync(Product product, int? recordToReturn = default)
         {
             if (product == null)
                 throw new ArgumentNullException(nameof(product));
@@ -92,8 +92,8 @@ namespace BTL.Services
                     (pp, p) => p
                   );
 
-            if (recordToReturn > 0)
-                query = query.Take(recordToReturn);
+            if(recordToReturn != null && recordToReturn.Value > 0)
+                query = query.Take(recordToReturn.Value);
 
             var pictures = await query.ToListAsync();
 

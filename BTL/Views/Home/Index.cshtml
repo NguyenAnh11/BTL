@@ -33,7 +33,7 @@
     <div class="row row-sm">
         @foreach (var product in Model.Products)
         {
-            <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+            <div class="col-12 col-md-4">
                 <div class="card card-sm card-product-grid text-center">
                     <a class="img-wrap">
                         <img src="@product.PictureUrl" />
@@ -43,7 +43,11 @@
                         <div class="price mt-1">@product.Price</div>
                     </figcaption>
                     <div class="my-2 d-flex justify-content-center">
-                        <button data-id="@product.Id" class="btn btn-add-cart btn-primary">
+                        <a class="btn btn-success" href='@Url.Action("Index", "Product", new { id = product.Id })'>
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                            <span>Xem</span>
+                        </a>
+                        <button data-id="@product.Id" class="ml-2 btn btn-add-cart btn-primary">
                             <i class="pr-2 fa fa-shopping-cart" aria-hidden="true"></i>
                             <span>Thêm vào giỏ hàng</span>
                         </button>

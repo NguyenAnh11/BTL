@@ -1,0 +1,159 @@
+﻿@model BTL.ViewModels.ProductModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="section-content bg-white padding-y">
+    <div class="container">
+        <!-- ============================ ITEM DETAIL ======================== -->
+        <div class="row">
+            <aside class="col-md-6">
+                <div class="card">
+                    <article class="gallery-wrap">
+                        <div class="img-big-wrap">
+                            <div>
+                                <a href="#">
+                                    <img width="200" height="200" src="@Url.Content($"~/Images/{Model.PictureUrl}")">
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- gallery-wrap .end// -->
+                </div>
+                <!-- card.// -->
+            </aside>
+            <main class="col-md-6">
+                <article class="product-info-aside">
+                    <h2 class="title mt-3">@Model.Name</h2>
+
+                    <div class="mb-3">
+                        <var class="price h4">@Model.Price</var>
+                    </div>
+                    <!-- price-detail-wrap .// -->
+
+                    <p>@Model.ShortDescription</p>
+
+                    <dl class="row">
+                        <dt class="col-sm-3">Manufacturer</dt>
+                        <dd class="col-sm-9">
+                            <span>@Model.ManufacturerName</span>
+                        </dd>
+
+                        <dt class="col-sm-3">Gtin</dt>
+                        <dd class="col-sm-9">
+                            <span>@Model.Gtin</span>
+                        </dd>
+
+                        <dt class="col-sm-3">SKU</dt>
+                        <dd class="col-sm-9">
+                            <span>@Model.Sku</span>
+                        </dd>
+
+                        <dt class="col-sm-3">Hàng mới</dt>
+                        <dd class="col-md-9">
+                            @if (Model.IsMarkNew)
+                            {
+                                <i class="text-success fa fa-check" aria-hidden="true"></i>
+                            }
+                            else
+                            {
+                                <i class="text-danger  fa fa-times" aria-hidden="true"></i>
+                            }
+                        </dd>
+
+                        <dt class="col-md-3">Số lượng</dt>
+                        <dd class="col-md-9">
+                            <span>@Model.StockQuantity</span>
+                        </dd>
+                    </dl>
+
+                    <div class="form-row mt-4">
+                        <div class="form-group col-md flex-grow-0">
+                            <div class="input-group mb-3 input-spinner">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-light" type="button" id="button-plus">+</button>
+                                </div>
+                                <input type="text" class="form-control" id="number" value="1" />
+                                <div class="input-group-append">
+                                    <button class="btn btn-light" type="button" id="button-minus"> &minus;</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- col.// -->
+                        <div class="form-group col-md">
+                            <button data-id="@Model.Id" id="btn-add-cart" class="btn btn-primary">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="text">Add to cart</span>
+                            </button>
+                        </div>
+                        <!-- col.// -->
+                    </div>
+                    <!-- row.// -->
+                </article>
+                <!-- product-info-aside .// -->
+            </main>
+            <!-- col.// -->
+        </div>
+        <!-- row.// -->
+        <!-- ================ ITEM DETAIL END .// ================= -->
+    </div>
+    <!-- container .//  -->
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#button-plus').on('click', function () {
+                let value = parseInt($('#number').val());
+
+                console.log(value);
+
+                $('#number').val(value + 1);
+            })
+
+            $('#button-minus').on('click', function () {
+                let value = parseInt($('#number').val())
+
+                console.log(value);
+
+                if (value == 1) {
+                    alert('Tối thiểu phải 1 sản phẩm');
+                    return;
+                }
+
+                $('#number').val(value - 1);
+            })
+
+            $('#btn-add-cart').on('click', function () {
+                let quantity = $('#number').val();
+                let productId = $(this).data('id');
+
+                console.log({ quantity, productId });
+
+                $.ajax({
+                    url: '/Cart/AddToCart',
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        productId,
+                        quantity
+                    }),
+                    success: function ({ success, msg, number }) {
+                        if (!success) {
+                            alert(msg);
+                        }
+                        else {
+                            alert('Thêm vào giỏ hàng thành công');
+
+                            $('#cart').text(number);
+                        }
+                    },
+                    error: function ({ responseText }) {
+                        console.log(responseText);
+                    }
+                })
+            })
+        })
+    </script>
+}
