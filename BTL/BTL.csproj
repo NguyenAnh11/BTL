@@ -173,17 +173,21 @@
     <Compile Include="Areas\Admin\Controllers\ManufacturerController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImageController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductController.cs" />
+    <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\ViewModel\BaseSearchModel.cs" />
-    <Compile Include="Areas\Admin\ViewModel\IPagedList.cs" />
-    <Compile Include="Areas\Admin\ViewModel\PagedList.cs" />
     <Compile Include="Areas\Admin\ViewModel\ProductModel.cs" />
     <Compile Include="Areas\Admin\ViewModel\ProductPictureModel.cs" />
+    <Compile Include="Areas\Admin\ViewModel\Response.cs" />
+    <Compile Include="Areas\Admin\ViewModel\RoleModel.cs" />
+    <Compile Include="Areas\Admin\ViewModel\RoleSearchModel.cs" />
     <Compile Include="Areas\Admin\ViewModel\UserSearchModel.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="Filters\AdminAuthrorizeAttribute.cs" />
     <Compile Include="Filters\HandleExceptionAttribute.cs" />
+    <Compile Include="Filters\ValidationAttribute.cs" />
     <Compile Include="Helpers\CommonHelper.cs" />
     <Compile Include="Migrations\202203311319052_Init.cs" />
     <Compile Include="Migrations\202203311319052_Init.designer.cs">
@@ -264,7 +268,7 @@
     <Compile Include="Areas\Admin\ViewModel\UserModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Data\ShopDbContext.cs" />
-    <Compile Include="Filters\SessionAuthorizeAttribute.cs" />
+    <Compile Include="Filters\SessionAuthenticationAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -403,6 +407,9 @@
     <Content Include="Images\items\.DS_Store" />
     <Content Include="Images\posts\.DS_Store" />
     <Content Include="Areas\Admin\Views\Shared\_Pagination.cshtml" />
+    <Content Include="Areas\Admin\Views\Role\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Role\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Role\Edit.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\index.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />

@@ -12,7 +12,8 @@ using System.Web.Mvc;
 
 namespace BTL.Areas.Admin.Controllers
 {
-    //[SessionAuthorize]
+    [SessionAuthentication]
+    [AdminAuthrorize]
     public class ManufacturerController : Controller
     {
         private readonly ShopDbContext _db;
@@ -20,7 +21,6 @@ namespace BTL.Areas.Admin.Controllers
         private readonly IDateTimeService _dateTimeService;
         private readonly IPictureService _pictureService;
         private readonly IManufacturerService _manufacturerService;
-        private const int PAGE_SIZE = 1;
 
         public ManufacturerController(
             ShopDbContext db,

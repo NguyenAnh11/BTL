@@ -1,4 +1,5 @@
-﻿using BTL.Models;
+﻿using BTL.Areas.Admin.ViewModel;
+using BTL.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,5 +12,6 @@ namespace BTL.Services
         Task<bool> IsUserInRoleAsync(User user, string name);
         Task<bool> IsAdminRoleAsync(User user);
         Task<bool> IsRegisterRoleAsync(User user);
+        Task<Response> DeleteRoleAsync(int id);
     }
 }

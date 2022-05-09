@@ -3,7 +3,7 @@ using System.Web.Mvc;
 
 namespace BTL.Filters
 {
-    public class SessionAuthorizeAttribute : AuthorizeAttribute
+    public class SessionAuthenticationAttribute : AuthorizeAttribute
     {
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {

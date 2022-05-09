@@ -1,0 +1,182 @@
+﻿@model BTL.Areas.Admin.ViewModel.RoleModel
+@{
+    ViewBag.Title = "Sửa quyền";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div class="py-1 px-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h2 class="fw-bolder">Sửa quyền</h2>
+                <small class="ml-3 d-flex align-items-center">
+                    <i class="px-2 text-primary fa fa-chevron-circle-left" aria-hidden="true"></i>
+                    <a class="text-primary text-decoration-none fs-5" href='@Url.Action("Index", "Product")'>
+                        Quay về trang chủ
+                    </a>
+                </small>
+            </div>
+            <div class="d-inline-block">
+                <button id="btn-save-role" class="btn btn-primary">
+                    Lưu
+                </button>
+                <button id="btn-saveAndEdit-role" class="btn btn-primary">
+                    Lưu và sửa
+                </button>
+            </div>
+        </div>
+    </div>
+    <p id="edit-role-error" class="text-danger"></p>
+    <div class="container-fluid mt-3">
+        <div class="form-horizontal">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <i class="fs-6 fw-light fa fa-info" aria-hidden="true"></i>
+                            <p class="pt-2 px-4 fs-6">Thông tin quyền</p>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @Html.TextBoxFor(p => p.Id, new { @id = "role-id", @type = "text", @class = "d-none form-control form-control-sm" })
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Tên quyền</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.Name, new { @id = "role-name", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập tên quyền" })
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Trạng thái</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.CheckBoxFor(p => p.IsActive, new { @id = "role-isActive", @class = "form-check-input" })
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Admin</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.CheckBoxFor(p => p.IsAdmin, new { @id = "role-isAdmin", @class = "form-check-input" })
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Hệ thống</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.CheckBoxFor(p => p.IsSystemRole, new { @id = "role-isSystemRole", @class = "form-check-input" })
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <div class="col-md-3">
+                            <div class="float-end">
+                                <p class="fw-lighter">Thứ tự</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(p => p.DisplayOrder, new { @id = "role-displayOrder", @type = "number", @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+
+        function validateRoleForm() {
+            let name = $('#role-name').val();
+
+            if (name.length == 0) {
+                $('#edit-role-error').text('Nhập tên quyền');
+
+                return false;
+            }
+
+            return true;
+        }
+
+        function saveRole(continueEdit = false) {
+            let id = $('#role-id').val();
+            let name = $('#role-name').val();
+            let isActive = $('#role-isActive').is(':checked') ? true : false;
+            let isAdmin = $('#role-isAdmin').is(':checked') ? true : false;
+            let isSystemRole = $('#role-isSystemRole').is(':checked') ? true : false;
+            let displayOrder = $('#role-displayOrder').val();
+
+            $.ajax({
+                url: '/Admin/Role/Edit',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    Id: id,
+                    Name: name,
+                    IsActive: isActive,
+                    IsAdmin: isAdmin,
+                    IsSystemRole: isSystemRole,
+                    DisplayOrder: displayOrder
+                }),
+                success: function ({ id, msg, success }) {
+
+                    $('#loading').css({
+                        'display': 'none'
+                    })
+
+                    if (!success) {
+                        $('#edit-role-error').text(msg);
+                    }
+                    else {
+                        let returnUrl = continueEdit ? '/Admin/Role/Edit/' + id : '/Admin/Role';
+
+                        window.location.href = returnUrl;
+                    }
+                },
+                error: function ({ responseText }) {
+                    console.log(responseText);
+                }
+            })
+        }
+
+        $(document).ready(function () {
+
+            $('#btn-save-role').on('click', function () {
+                if (!validateRoleForm()) return;
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                saveRole(false)
+            })
+
+            $('#btn-saveAndEdit-role').on('click', function () {
+
+                if (!validateRoleForm()) return;
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                saveRole(true)
+            })
+        })
+
+    </script>
+}

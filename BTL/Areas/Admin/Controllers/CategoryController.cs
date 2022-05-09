@@ -12,7 +12,8 @@ using System.Web.Mvc;
 
 namespace BTL.Areas.Admin.Controllers
 {
-    [SessionAuthorize]
+    [SessionAuthentication]
+    [AdminAuthrorize]
     public class CategoryController : Controller
     {
         private readonly ShopDbContext _db;
@@ -38,9 +39,6 @@ namespace BTL.Areas.Admin.Controllers
         public ActionResult Index()
         {
             var model = new CategorySearchModel();
-
-            //model.Page = 1;
-            //model.PageSize = 5;
 
             ViewBag.CategoryStatuses = _commonService.PrepareStatusModel();
 
@@ -106,12 +104,6 @@ namespace BTL.Areas.Admin.Controllers
             }
 
             return Json(new { data = models }, JsonRequestBehavior.AllowGet);
-            //var pagedModel = new PagedList<CategoryModel>(models, searchModel.Page, searchModel.PageSize);
-            //return Json(new { data = pagedModel }, JsonRequestBehavior.AllowGet);
-        }
-        public PartialViewResult Pagination(int page, int pageSize, int totalPages, bool hasPreviousPage, bool hasNextPage)
-        {
-            return PartialView("_Pagination", new { page, pageSize, totalPages, hasPreviousPage, hasNextPage });
         }
         [HttpGet]
         public async Task<ActionResult> Create()

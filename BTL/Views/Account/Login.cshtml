@@ -102,11 +102,11 @@
                     'Email': email,
                     'Password': password
                 }),
-                success: function (response) {
-                    const { success, msg, returnUrl } = response;
-
+                success: function ({ success, msg, returnUrl }) {
                     if (!success) {
                         $('#login-error').text(msg);
+
+                        return;
                     }
                     else {
                         alert('Đăng nhập thành công');

@@ -12,7 +12,8 @@ using System.Web.Mvc;
 
 namespace BTL.Areas.Admin.Controllers
 {
-    //[SessionAuthorize]
+    [SessionAuthentication]
+    [AdminAuthrorize]
     public class ProductController : Controller
     {
         private readonly ShopDbContext _db;

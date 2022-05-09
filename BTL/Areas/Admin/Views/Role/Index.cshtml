@@ -1,0 +1,291 @@
+﻿@model BTL.Areas.Admin.ViewModel.RoleSearchModel
+@{
+    ViewBag.Title = "Quyền";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bolder">Sản phẩm</h2>
+            <div class="d-inline-block">
+                <a class="btn btn-primary" href='@Url.Action("Create", "Role")'>
+                    <span>Thêm mới</span>
+                </a>
+                <button id="btn-delete-role" class="btn btn-danger">
+                    <span>Xóa quyền</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-2">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="px-3 py-1">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fs-4 fw-light fa fa-search" aria-hidden="true"></i>
+                                        <p class="pt-2 px-4 fs-4">Tìm kiếm</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-8"></div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Tên quyền</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(p => p.Name, new { @id = "role-name", @type = "text", @class = "form-control form-control-sm", @placeholder = "Nhập tên quyền" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Trạng thái</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(p => p.IsActive, new { @id = "role-isActive", @class = "form-check-input", @type = "checkbox" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <p class="fw-lighter">Hệ thống</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(p => p.IsSystemRole, new { @id = "role-isSystemRole", @class = "form-check-input", @type = "checkbox" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="row">
+                                    <div class="text-center col-md-12">
+                                        <button id="btn-search-role" class="btn btn-outline-info">
+                                            <div class="text-center">
+                                                <i class="fas fa-search pr-2"></i>
+                                                <span>Tìm kiếm</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="py-2 px-3">
+                            <table id="table-role" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr class="text-center border d-table-row">
+                                        <th scope="col">
+                                            <input id="checkboxs" class="form-check-input" type="checkbox" value="">
+                                        </th>
+                                        <th scope="col">Mã</th>
+                                        <th scope="col">Tên</th>
+                                        <th scope="col">Tình trạng</th>
+                                        <th scope="col">Admin</th>
+                                        <th scope="col">Hệ thống</th>
+                                        <th scope="col">Sửa</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="display: table-row-group; vertical-align: middle" id="table-role-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+
+        function clearRoleTable() {
+            $('#table-role-body').empty()
+        }
+
+        function fillRoleTable(data) {
+            console.log(data)
+            let table = '';
+            if (data.length > 0) {
+                for (let i = 0; i < data.length; i++) {
+                    table += '<tr class="text-center d-table-row">';
+
+                    table += '<th class="text-center" scope="row">';
+                    table += '<input class="checkbox form-check-input" type="checkbox" value=""';
+                    table += 'data-id=' + data[i].Id + '>';
+                    table += '</th>';
+
+                    table += '<th>' + data[i].Id + '</th>';
+
+                    table += '<th>' + data[i].Name + '</th>';
+
+                    let icon = data[i].IsActive == true ? '<i class="text-success fa fa-check" aria-hidden="true"></i>' : '<i class="text-success  fa fa-times" aria-hidden="true"></i>';
+                    table += '<th>' + icon + '</th>';
+
+                    icon = data[i].IsAdmin == true ? '<i class="text-success fa fa-check" aria-hidden="true"></i>' : '<i class="text-success  fa fa-times" aria-hidden="true"></i>';
+                    table += '<th>' + icon + '</th>';
+
+                    icon = data[i].IsSystemRole == true ? '<i class="text-success fa fa-check" aria-hidden="true"></i>' : '<i class="text-success  fa fa-times" aria-hidden="true"></i>';
+                    table += '<th>' + icon + '</th>';
+
+                    let editUrl = '/Admin/Role/Edit/' + data[i].Id;
+                    table += '<th>' + '<a class="btn btn-primary"';
+                    table += 'href=' + editUrl + '>';
+                    table += '<span>Sửa</span>';
+                    table += '</a>';
+                    table += '</th>';
+
+                    table += '</tr>';
+                }
+            }
+            else {
+                table += '<tr>';
+                table += '<th colspan="9" class="text-center">';
+                table += '<p class="text-danger">Không có dữ liệu</p>';
+                table += '</th>';
+                table += '</tr>';
+            }
+
+            $('#table-role-body').append(table);
+        }
+
+        function loadRoleTable(
+            name = '',
+            isActive = true,
+            isSystemRole = false
+        ) {
+            $.ajax({
+                url: '/Admin/Role',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    Name: name,
+                    IsActive: isActive,
+                    IsSystemRole: isSystemRole
+                }),
+                success: function ({ data }) {
+                    clearRoleTable();
+
+                    fillRoleTable(data);
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                },
+                complete: function () {
+
+                    setTimeout(() => {
+                        $('#loading').css({
+                            'display': 'none'
+                        })
+                    }, 500);
+                }
+            })
+        }
+
+        $(document).ready(function () {
+
+            $('#loading').css({
+                'display': 'block'
+            })
+
+            let name = $('#role-name').val();
+            let isActive = $('#role-isActive').is(':checked') ? true : false;
+            let isSystemRole = $('#role-isSystemRole').is(':checked') ? true : false;
+
+            console.log(name, isActive, isSystemRole);
+
+            loadRoleTable(name, isActive, isSystemRole);
+
+            $('#btn-search-role').on('click', function () {
+                let name = $('#role-name').val()
+
+                let isActive = false;
+                if ($('#role-isActive').is(':checked')) {
+                    isActive = true;
+                }
+
+                let isSystemRole = false;
+                if ($('#role-isSystemRole').is(':checked')) {
+                    isSystemRole = true;
+                }
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                loadRoleTable(name, isActive, isSystemRole);
+            })
+
+            $('#btn-delete-role').on('click', function () {
+
+                const checkboxes = $('.checkbox');
+                let ids = [];
+
+                for (let i = 0; i < checkboxes.length; i++) {
+                    let checkbox = checkboxes[i];
+                    if (checkbox.checked) {
+                        let id = checkbox.dataset.id;
+                        ids.push(id);
+                    }
+                }
+
+                if (ids.length == 0) {
+                    alert('Chọn chỉ mục xóa');
+                    return;
+                }
+
+                if (ids.length > 1) {
+                    alert('Chọn tối đa 1 chỉ mục');
+                    return;
+                }
+
+                $('#loading').css({
+                    'display': 'block'
+                })
+
+                $.ajax({
+                    url: '/Admin/Role/Delete/' + ids[0],
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function ({ response }) {
+                        if (response.Success) {
+                            alert('Xóa thành công');
+
+                            loadRoleTable();
+                        }
+                        else {
+                            alert(response.Message);
+                        }
+
+                    },
+                    error: function ({ responseText  }) {
+                        console.log(responseText);
+                    },
+                    complete: function () {
+
+                        setTimeout(() => {
+
+                            $('#loading').css({
+                                'display': 'none'
+                            })
+                        }, 500)
+                    }
+                })
+            })
+        })
+    </script>
+}
